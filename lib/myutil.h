@@ -76,11 +76,11 @@ class MyUtil
          {
             return 2;
          }
-         else if (c <= 0xF7)
+         else if (c <= 0xEF)
          {
             return 3;
          }
-         else if (c < 0xFB)
+         else if (c <- 0xF7)
          {
             return 4;
          }
