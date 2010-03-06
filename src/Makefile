@@ -3,7 +3,8 @@ DEF= -W -Wall -g -O2
 INC= -I/opt/local/include -I. -I../lib
 LIB= -L/opt/local/lib -L../lib
 
-bin= cnftagger cnflearn sequencetest
+#bin= cnftagger cnflearn sequencetest
+bin= cnftagger cnflearn
 
 all: $(bin)
 
@@ -34,12 +35,12 @@ dictest.o: ../lib/dictest.cpp
 dic.o: ../lib/dic.cpp
 	$(CXX) $(DEF) -c ../lib/dic.cpp $(INC) $(LIB)
 
-sequencetest: sequencetest.o sequence.o allocmd.o
-	$(CXX) $(DEF) sequencetest.o sequence.o allocmd.o\
-	-o sequencetest $(INC) $(LIB) -lz
+#sequencetest: sequencetest.o sequence.o allocmd.o
+#	$(CXX) $(DEF) sequencetest.o sequence.o allocmd.o\
+#	 -o sequencetest $(INC) $(LIB) -lz
 
-sequencetest.o: ../lib/sequencetest.cpp
-	$(CXX) $(DEF) -c ../lib/sequencetest.cpp $(INC) $(LIB)
+#sequencetest.o: ../lib/sequencetest.cpp
+#	$(CXX) $(DEF) -c ../lib/sequencetest.cpp $(INC) $(LIB)
 
 sequence.o: ../lib/sequence.cpp
 	$(CXX) $(DEF) -c ../lib/sequence.cpp $(INC) $(LIB)

@@ -16,7 +16,7 @@ class MyUtil
       MyUtil();
       ~MyUtil();
 
-      static inline bool MyUtil::IsEOS (const char *str)
+      static inline bool IsEOS (const char *str)
       {
          if (std::strcmp(str,"") == 0)
          {
@@ -25,7 +25,7 @@ class MyUtil
          return false;
       }
 
-      static inline void MyUtil::chomp (char *str)
+      static inline void chomp (char *str)
       {
          int len = std::strlen(str);
          if (*(str+len-1) == '\n')
@@ -39,7 +39,7 @@ class MyUtil
          }
       }
 
-      static inline unsigned int MyUtil::getByteUtf8 (const char *p)
+      static inline unsigned int getByteUtf8 (const char *p)
       {
          const unsigned char c = *p;
          if (c <= 0x7F)
@@ -63,12 +63,12 @@ class MyUtil
          return (unsigned int)-1;
       }
 
-      static inline void MyUtil::push (int c, char **s)
+      static inline void push (int c, char **s)
       {
          *(*s)++ = c;
       }
 
-      static inline void MyUtil::itoalter (int n, char **s)
+      static inline void itoalter (int n, char **s)
       {
          if (n != 0)
          {
@@ -77,7 +77,7 @@ class MyUtil
          }
       }
 
-      static inline void MyUtil::itoa (int n, char *s)
+      static inline void itoa (int n, char *s)
       {
          if (n < 0)
          {
@@ -88,7 +88,7 @@ class MyUtil
          push ('\0', &s);
       }
 
-      static inline bool MyUtil::IsCommentOut (char *str)
+      static inline bool IsCommentOut (char *str)
       {
          for (; *str != '\0' && (*str == ' ' || *str == '\t'); str++);
          if (std::strlen(str) == 0)
