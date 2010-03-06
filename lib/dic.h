@@ -39,7 +39,7 @@ class Dic
        * @param[in] keyword
        * @param[out] node
        */
-      nodeptr* get(char *word);
+      nodeptr* get(const char *word);
       /**
        * @param[out] stored word num
        */
@@ -59,7 +59,7 @@ class Dic
       Dic& operator=(const Dic&);
 
       int init();
-      static inline int hash(char *s)
+      static inline int hash(const char *s)
       {
          unsigned int v;
          for (v = 0; *s != '\0'; s++)

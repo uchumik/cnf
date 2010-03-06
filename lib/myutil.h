@@ -90,7 +90,7 @@ class MyUtil
 
       static inline bool IsCommentOut (char *str)
       {
-         for (; *str != '\0' && (*str == ' ' || *str == '\t'); str++);
+         for (; *str != '\0' && (*str == ' ' || *str == '\t'); str++) ;
          if (std::strlen(str) == 0)
          {
             return true;

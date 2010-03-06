@@ -119,7 +119,7 @@ char* Sequence::getToken (int row, int col)
    // BOS
    if (row < 0)
    {
-      char *head = "_B";
+      const char *head = "_B";
       char tail[64] = "\0";
       MyUtil::itoa(row,tail);
       int len = std::strlen(head) + std::strlen(tail);
@@ -132,7 +132,7 @@ char* Sequence::getToken (int row, int col)
    // EOS
    else if (row >= (int)(this->point/this->colsize))
    {
-      char *head = "_E+";
+      const char *head = "_E+";
       char tail[64] = "\0";
       MyUtil::itoa(row+(1-(int)this->point/this->colsize),tail);
       int len = std::strlen(head) + std::strlen(tail);

@@ -114,7 +114,7 @@ nodeptr Dic::insert (char *word)
    return *p;
 }
 
-nodeptr* Dic::get (char *word)
+nodeptr* Dic::get (const char *word)
 {
    int dist = 0;
    nodeptr *p = (this->table+Dic::hash(word));

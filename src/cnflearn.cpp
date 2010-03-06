@@ -302,14 +302,9 @@ float Cnflearn::forward(fbnode **lattice,
    feature_t e;
    if (this->bonly)
    {
-      char *b = "B";
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      if (*n != nil)
-      {
-         e.bf.push_back((*n)->val);
-         e.bt.push_back(this->botmpl);
-      }
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
    }
    float z = 0;
    for (int j = 0; j < row; j++)
@@ -351,14 +346,9 @@ float Cnflearn::backward(fbnode **lattice,
    feature_t e;
    if (this->bonly)
    {
-      char *b = "B";
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      if (*n != nil)
-      {
-         e.bf.push_back((*n)->val);
-         e.bt.push_back(this->botmpl);
-      }
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
    }
    float z = 0;
    for (int j = 0; j < row; j++)
@@ -452,14 +442,9 @@ void Cnflearn::getcorrectv(std::vector<int>& corrects,
    feature_t e;
    if (this->bonly)
    {
-      char *b = "B";
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      if (*n != nil)
-      {
-         e.bf.push_back((*n)->val);
-         e.bt.push_back(this->botmpl);
-      }
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
    }
    /*
       char *b = "B";
@@ -533,14 +518,9 @@ void Cnflearn::getgradient(fbnode **lattice,
    feature_t e;
    if (this->bonly)
    {
-      char *b = "B";
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      if (*n != nil)
-      {
-         e.bf.push_back((*n)->val);
-         e.bt.push_back(this->botmpl);
-      }
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
    }
    /*
       char *b = "B";
@@ -828,15 +808,15 @@ char* Cnflearn::expand(char *tp, Sequence *s, int current)
          *p++ = '\0';
          std::strcat(f,tp);
          tp = p+2;
-         for (; *p != ','; p++);
+         for (; *p != ','; p++) ;
          *p++ = '\0';
          int row = atoi(tp);
          tp = p;
-         for (; *p != ','; p++);
+         for (; *p != ','; p++) ;
          *p++ = '\0';
          int col = atoi(tp);
          tp = p;
-         for (; *p != ']'; p++);
+         for (; *p != ']'; p++) ;
          *p++ = '\0';
          std::strcat(f, s->getToken(current+row,col));
          tp = p;
@@ -939,21 +919,21 @@ bool Cnflearn::check(char *tp)
       {
          okay = false;
          tp = p+2;
-         for (; *p != ',' && *p != '\0'; p++);
+         for (; *p != ',' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';
          // row
          atoi(tp);
          tp = p;
-         for (; *p != ',' && *p != '\0'; p++);
+         for (; *p != ',' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';
          // col
          atoi(tp);
          tp = p;
-         for (; *p != ']' && *p != '\0'; p++);
+         for (; *p != ']' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';

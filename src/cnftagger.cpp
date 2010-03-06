@@ -316,21 +316,21 @@ bool Cnftagger::check(char *tp)
       {
          okay = false;
          tp = p+2;
-         for (; *p != ',' && *p != '\0'; p++);
+         for (; *p != ',' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';
          // row
          atoi(tp);
          tp = p;
-         for (; *p != ',' && *p != '\0'; p++);
+         for (; *p != ',' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';
          // col
          atoi(tp);
          tp = p;
-         for (; *p != ']' && *p != '\0'; p++);
+         for (; *p != ']' && *p != '\0'; p++) ;
          if (*p == '\0')
             break;
          *p++ = '\0';
@@ -387,15 +387,15 @@ char* Cnftagger::expand(char *tp, Sequence *s, int current)
          *p++ = '\0';
          std::strcat(f,tp);
          tp = p+2;
-         for (; *p != ','; p++);
+         for (; *p != ','; p++) ;
          *p++ = '\0';
          int row = atoi(tp);
          tp = p;
-         for (; *p != ','; p++);
+         for (; *p != ','; p++) ;
          *p++ = '\0';
          int col = atoi(tp);
          tp = p;
-         for (; *p != ']'; p++);
+         for (; *p != ']'; p++) ;
          *p++ = '\0';
          std::strcat(f, s->getToken(current+row,col));
          tp = p;
@@ -603,27 +603,22 @@ void Cnftagger::viterbi(Sequence *s,
    feature_t e;
    if (this->bonly)
    {
-      char *b = "B";
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      if (*n != nil)
-      {
-         e.bf.push_back((*n)->val);
-         e.bt.push_back(this->botmpl);
-      }
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
    }
    /*
-   char *b = "B";
-   int tmpl = this->f2t[b];
-   nodeptr *n = this->bfeatures->get(b);
-   nodeptr nil = this->bfeatures->getnil();
-   feature_t e;
-   if (*n != nil)
-   {
+      char *b = "B";
+      int tmpl = this->f2t[b];
+      nodeptr *n = this->bfeatures->get(b);
+      nodeptr nil = this->bfeatures->getnil();
+      feature_t e;
+      if (*n != nil)
+      {
       e.bf.push_back((*n)->val);
       e.bt.push_back(tmpl);
-   }
-   */
+      }
+    */
    float max = 0;
    int joinid = 0;
    for (int j = 0; j < row; j++)
