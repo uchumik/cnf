@@ -320,13 +320,20 @@ float Cnflearn::backward(fbnode **lattice,
       std::vector<feature_t>& featureset)
 {
    int row = this->labels->getsize();
+   feature_t e;
+   if (this->bonly)
+   {
+      nodeptr *n = this->bfeatures->get("B");
+      e.bf.push_back((*n)->val);
+      e.bt.push_back(this->botmpl);
+   }
    for (int i = col-1; i >= 0; i--)
    {
       for (int j = 0; j < row; j++)
       {
          if (i == col-1)
          {
-            float cost = this->getbcost(row, j, &featureset[i]);
+            float cost = this->getbcost(row, j, &e);
             lattice[i][j]._beta =
                Cnflearn::logsumexp(lattice[i][j]._beta, cost, true);
          }
@@ -335,7 +342,7 @@ float Cnflearn::backward(fbnode **lattice,
             for (int k = 0; k < row; k++)
             {
                float cost = lattice[i+1][k]._lcost
-                  + this->getbcost(2*row+j*row, k, &featureset[i]);
+                  + this->getbcost(2*row+j*row, k, &featureset[i+1]);
                lattice[i][j]._beta =
                   Cnflearn::logsumexp(lattice[i][j]._beta,
                         lattice[i+1][k]._beta+cost,(k==0));
@@ -343,18 +350,11 @@ float Cnflearn::backward(fbnode **lattice,
          }
       }
    }
-   feature_t e;
-   if (this->bonly)
-   {
-      nodeptr *n = this->bfeatures->get("B");
-      e.bf.push_back((*n)->val);
-      e.bt.push_back(this->botmpl);
-   }
    float z = 0;
    for (int j = 0; j < row; j++)
    {
       float cost = lattice[0][j]._lcost
-         + this->getbcost(0, j, &e);
+         + this->getbcost(0, j, &featureset[0]);
       z = Cnflearn::logsumexp(z, lattice[0][j]._beta+cost, (j==0));
    }
    return z;
@@ -446,18 +446,6 @@ void Cnflearn::getcorrectv(std::vector<int>& corrects,
       e.bf.push_back((*n)->val);
       e.bt.push_back(this->botmpl);
    }
-   /*
-      char *b = "B";
-      int tmpl = this->f2t[b];
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      feature_t e;
-      if (*n != nil)
-      {
-      e.bf.push_back((*n)->val);
-      e.bt.push_back(tmpl);
-      }
-    */
    this->upbweight(bias, corrects[col-1], &e, v, 1.);
 }
 
@@ -498,6 +486,8 @@ void Cnflearn::getgradient(fbnode **lattice,
                      + lattice[i][j]._lcost
                      + bcost
                      - z);
+               //fprintf (stderr,"alpha: %f, beta: %f, lcost: %f, bcost: %f, z: %f, expect: %f\n",lattice[i-1][k]._alpha,
+               //lattice[i][j]._beta, lattice[i][j]._lcost, bcost, z , lex);
                expect += lex;
                this->upbweight(b, j, &featureset[i], v, -lex);
             }
@@ -522,18 +512,6 @@ void Cnflearn::getgradient(fbnode **lattice,
       e.bf.push_back((*n)->val);
       e.bt.push_back(this->botmpl);
    }
-   /*
-      char *b = "B";
-      int tmpl = this->f2t[b];
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      feature_t e;
-      if (*n != nil)
-      {
-      e.bf.push_back((*n)->val);
-      e.bt.push_back(tmpl);
-      }
-    */
    int be = bias + row;
    for (int j = 0; j < row; j++)
    {
