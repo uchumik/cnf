@@ -2,7 +2,7 @@
  * Copyright (C) 2010- Kei Uchiumi
  */
 # include <allocpl.h>
-# include <cstdio>
+# include <cstdlib>
 # include <memory>
 
 PoolAlloc::PoolAlloc (size_t blocksize, size_t poolsize)

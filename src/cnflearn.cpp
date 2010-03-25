@@ -15,6 +15,7 @@
 # include <sequence.h>
 # include <allocmd.h>
 # include <sparsevect.h>
+# include <cstdlib>
 
 # define CNF_BUFSIZE 1024
 # define CNF_BLOCK 128
