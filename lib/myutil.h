@@ -9,6 +9,9 @@
 # include <cstdio>
 # include <cstring>
 # include <sequence.h>
+# include <string>
+# include <iostream>
+# include <fstream>
 
 class MyUtil
 {
@@ -25,17 +28,40 @@ class MyUtil
          return false;
       }
 
+      static inline bool IsEOS (std::string& s)
+      {
+         if (s == "")
+         {
+            return true;
+         }
+         return false;
+      }
+
       static inline void chomp (char *str)
       {
          int len = std::strlen(str);
          if (*(str+len-1) == '\n')
          {
             *(str+len-1) = '\0';
-            len--;
+            --len;
          }
          if (*(str+len-1) == '\r')
          {
             *(str+len-1) = '\0';
+         }
+      }
+
+      static inline void chomp (std::string& s)
+      {
+         int len = s.size();
+         if (s[len-1] == '\n')
+         {
+            s[len-1] = '\0';
+            --len;
+         }
+         if (s[len-1] == '\r')
+         {
+            s[len-1] = '\0';
          }
       }
 
@@ -88,7 +114,7 @@ class MyUtil
          push ('\0', &s);
       }
 
-      static inline bool IsCommentOut (char *str)
+      static inline bool IsCommentOut (const char *str)
       {
          for (; *str != '\0' && (*str == ' ' || *str == '\t'); str++) ;
          if (std::strlen(str) == 0)
@@ -118,6 +144,24 @@ class MyUtil
                break;
             }
             s->push(buf);
+         }
+      }
+      /**
+       * read sequence function
+       * @param in   ifstream
+       * @param sq   Sequence
+       */
+      static void sqread(std::ifstream& in, Sequence *s)
+      {
+         std::string line;
+         while (std::getline(in,line))
+         {
+            MyUtil::chomp(line);
+            if (MyUtil::IsEOS(line))
+            {
+               break;
+            }
+            s->push(line.c_str());
          }
       }
    private:

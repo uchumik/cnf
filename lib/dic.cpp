@@ -70,7 +70,7 @@ nodeptr Dic::insert (char *word)
 {
    int dist = 0;
    nodeptr *p = (this->table+Dic::hash(word));
-   while ( (dist = std::strcmp( (*p)->key, word ) ) != 0 && *p != &nil )
+   while ( *p != &nil && (dist = std::strcmp( (*p)->key, word ) ) != 0 )
    {
       if (dist < 0)
       {
