@@ -341,13 +341,16 @@ class SemiCnflearn
       void getgradient(std::vector<node_t>& lattice, SparseVector *v, float z);
       void l1regularize(SparseVector *v);
       void l2regularize(SparseVector *v);
-      void dumplabels(std::ostream &out);
-      void dumpparams(std::ostream &out);
-      void dumpfeatures(std::ostream &out);
-      void dumpufeatures(std::ostream &out, std::vector<char*>& f);
-      void dumpbfeatures(std::ostream &out, std::vector<char*>& f);
-      void dumpusegments(std::ostream &out, std::vector<char*>& f);
-      void dumpbsegments(std::ostream &out, std::vector<char*>& f);
+      void dumpllabels(std::ofstream &out);
+      void dumpslabels(std::ofstream &out);
+      void dumpfwit(std::ofstream &out);
+      void dumpsl2ll(std::ofstream &out);
+      void dumpparams(std::ofstream &out);
+      void dumpfeatures(std::ofstream &out);
+      void dumpufeatures(std::ofstream &out, std::vector<char*>& f);
+      void dumpbfeatures(std::ofstream &out, std::vector<char*>& f);
+      void dumpusegments(std::ofstream &out, std::vector<char*>& f);
+      void dumpbsegments(std::ofstream &out, std::vector<char*>& f);
       void inversef(nodeptr p, nodeptr nil, std::vector<char*>& f);
       void callinv(nodeptr *p, nodeptr nil, std::vector<char*>& f);
 

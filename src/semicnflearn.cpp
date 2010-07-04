@@ -171,13 +171,14 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
             this->tmpli+=blen;
          }
       }
-      /// TODO: ここはリファクタする
+      /// TODO: リファクタすべし
       /// make segments
       std::vector<char*>::iterator usit = us.begin();
       std::vector<char*>::iterator bsit = bs.begin();
       int uslen = 1;
       int bslen = 1;
-      int lsize = this->slabels->getsize();
+      //int lsize = this->slabels->getsize();
+      int lsize = this->slabelsize;
       while (!(usit == us.end() && bsit == bs.end()))
       {
          segment_t s;
@@ -262,6 +263,13 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
             lattice[i].next.push_back(seg);
             if (i+seg->len <= size)
             {
+               /*
+               std::cerr << "join"
+               << ' ' << seg->sl << ' ' << seg->uid
+               << ' ' << seg->len
+               << ' ' << i << "->" << i+seg->len
+               << std::endl;
+               */
                lattice[i+seg->len].prev.push_back(seg);
             }
          }
@@ -301,7 +309,7 @@ void SemiCnflearn::initlattice(std::vector<node_t>& lattice)
          if (usid > -1)
          {
             //(*sit)->_lcost += this->getfw(this->bmid+1+usid*this->labelsize+label, ustmpl);
-            (*sit)->_lcost += this->getfw(this->bmid+1+usid*this->llabelsize+slabel, ustmpl);
+            (*sit)->_lcost += this->getfw(this->bmid+1+usid*this->slabelsize+slabel, ustmpl);
          }
          /// token features cost
          for (int j = 0; j < len; ++j)
@@ -801,17 +809,32 @@ void SemiCnflearn::getcorrectv(std::vector<correct_t>& c,
       int size = lattice[t].next.size();
       int uid = -1;  int bid = -1;
       int ut = -1;   int bt = -1;
+      int uplen = -1;
       for (int j = 0; j < size; ++j)
       {
          int slabel = lattice[p].next[j]->sl;
+         //int sbl = lattice[p].next[j]->bl;
+         //int sil = lattice[p].next[j]->il;
          int slen = lattice[p].next[j]->len;
          if (label == slabel && len == slen)
          {
-            uid = lattice[p].next[j]->uid;   bid = lattice[p].next[j]->bid;
-            ut = lattice[p].next[j]->ut;     bt = lattice[p].next[j]->bt;
+            uid = lattice[t].next[j]->uid;   bid = lattice[t].next[j]->bid;
+            ut = lattice[t].next[j]->ut;     bt = lattice[t].next[j]->bt;
+            /*
+            std::cerr << "cblabel=" << this->label2surf[lbl]
+            << " cilabel=" << this->label2surf[lil]
+            << " sblabel=" << this->label2surf[sbl]
+            << " silabel=" << this->label2surf[sil]
+            << " uid=" << uid
+            << " clen=" << len
+            << " slen=" << slen
+            << std::endl;
+            */
+            uplen = slen;
             break;
          }
       }
+      //std::cerr << "up " << label << ' ' << uid << ' ' << uplen << std::endl;
       this->upusweight(label, uid, ut, v, 1.);
       if (bid > -1)
       {
@@ -902,6 +925,25 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
                   c += this->getbscost(id, (*nit)->bt, (*nit)->sl);
                }
                float e = SemiCnflearn::myexp((*pit)->_alpha + (*nit)->_beta + c - z);
+               /*
+                  if ((*pit)->_alpha+(*nit)->_beta+c-z > 0.)
+                  std::cerr << e
+                  << ' '
+                  << c
+                  << ' '
+                  << (*pit)->_alpha
+                  << ' '
+                  << (*nit)->_beta
+                  << ' '
+                  << z
+                  << ' '
+                  << (*pit)->_alpha+(*nit)->_beta+c-z
+                  << ' '
+                  << bias
+                  << ' '
+                  << this->getbfcost(&(*it).tokenf,bias,(*nit)->bl)
+                  << std::endl;
+                */
                //this->upbfweight(bias, (*nit)->l, &(*it).tokenf, v, -e);
                this->upbfweight(bias, (*nit)->bl, &(*it).tokenf, v, -e);
                if ((*nit)->bid > -1)
@@ -913,13 +955,15 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
             }
          }
          /*
-            if (expect > 0.1)
+         if (expect > 0.1)
             std::cerr << "p=" << i+1
-            << " len=" << (*nit)->len
-            << " blabel=" << this->label2surf[(*nit)->bl]
-            << " ilabel=" << this->label2surf[(*nit)->il]
-            << " e=" << expect << std::endl;
-          */
+               << " len=" << (*nit)->len
+               << " blabel=" << this->label2surf[(*nit)->bl]
+               << " ilabel=" << this->label2surf[(*nit)->il]
+               << " slabel=" << (*nit)->sl
+               << " uid=" << (*nit)->uid
+               << " e=" << expect << std::endl;
+               */
          /// token feature
          for (int j = 0; j < len; ++j)
          {
@@ -940,6 +984,7 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
             this->upbfweight(bias, (*nit)->il, &(*(it+j)).tokenf, v, -expect);
          }
          /// unigram segment
+         //std::cerr << "grad " << (*nit)->sl << ' ' << (*nit)->uid << ' ' << (*nit)->len << std::endl;
          this->upusweight((*nit)->sl, (*nit)->uid, (*nit)->ut, v, -expect);
       }
    }
@@ -1165,14 +1210,6 @@ void SemiCnflearn::report()
       << "usparameters: " << this->usid-this->bmid << std::endl
       << "bsparameters: " << this->bsid-this->usid << std::endl
       << "model parameters: " << this->parameters << std::endl;
-
-/*
-   std::vector<char*>::iterator lit = this->label2surf.begin();
-   for (; lit != this->label2surf.end(); ++lit)
-   {
-      std::cerr << *lit << std::endl;
-   }
-   */
 }
 
 void SemiCnflearn::initmodel()
@@ -1264,8 +1301,8 @@ void SemiCnflearn::storesf(nodeptr p, nodeptr nil)
    {
       return;
    }
-   this->storeff(p->left, nil);
-   this->storeff(p->right, nil);
+   this->storesf(p->left, nil);
+   this->storesf(p->right, nil);
    if (p->val < (int)this->sbound)
    {
       return;
@@ -1758,4 +1795,162 @@ bool SemiCnflearn::tmplcheck()
    }
    this->fwit.push_back(this->nk);
    return true;
+}
+
+void SemiCnflearn::dumpllabels(std::ofstream& out)
+{
+   out << "Start_lLabel" << std::endl;
+   for (unsigned int i = 0; i < this->label2surf.size(); ++i)
+   {
+      out << '[' << i << "]=" << this->label2surf[i] << std::endl;
+   }
+   out << "End_lLabel" << std::endl;
+}
+
+void SemiCnflearn::dumpsl2ll(std::ofstream& out)
+{
+   out << "Start_sl2ll" << std::endl;
+   for (unsigned int i = 0; i < this->sl2ll.size(); ++i)
+   {
+      out << '[' << i << "]=" << this->sl2ll[i].bl << ' ' << this->sl2ll[i].il << std::endl;
+   }
+   out << "End_sl2ll" << std::endl;
+}
+
+void SemiCnflearn::dumpfwit(std::ofstream& out)
+{
+   out << "Start_Fwit" << std::endl;
+   for (unsigned int i = 0; i < this->fwit.size(); ++i)
+   {
+      out << '[' << i << "]=" << this->fwit[i] << std::endl;
+   }
+   out << "End_Fwit" << std::endl;
+}
+
+void SemiCnflearn::dumpparams(std::ofstream& out)
+{
+   out << "Start_Params" << std::endl;
+   out.setf(std::ios::scientific);
+   for (unsigned int i = 0; i < this->parameters; ++i)
+   {
+      out << '[' << i << "]=" << *(this->model+i) << std::endl;
+   }
+   out.unsetf(std::ios::scientific);
+   out << "End_Params" << std::endl;
+}
+
+void SemiCnflearn::inversef(nodeptr p, nodeptr nil, std::vector<char*>& f)
+{
+   if (p == nil)
+   {
+      return;
+   }
+   this->inversef(p->left,nil,f);
+   this->inversef(p->right,nil,f);
+   f[p->val] = p->key;
+   return;
+}
+
+void SemiCnflearn::callinv(nodeptr *p, nodeptr nil, std::vector<char*>& f)
+{
+   for (int i = 0; i < HASHSIZE; ++i)
+   {
+      nodeptr *q = (p+i);
+      if (*q == nil)
+      {
+         continue;
+      }
+      this->inversef(*q,nil,f);
+   }
+}
+
+void SemiCnflearn::dumpufeatures(std::ofstream& out, std::vector<char*>& f)
+{
+   out << "Start_uFeatures" << std::endl;
+   for (unsigned int i = 0; i < f.size(); ++i)
+   {
+      out << '[' << i << "]=" << f[i] << std::endl;
+   }
+   out << "End_uFeatures" << std::endl;
+}
+
+void SemiCnflearn::dumpbfeatures(std::ofstream& out, std::vector<char*>& f)
+{
+   out << "Start_bFeatures" << std::endl;
+   for (unsigned int i = 0; i < f.size(); ++i)
+   {
+      out << '[' << i << "]=" << f[i] << std::endl;
+   }
+   out << "End_bFeatures" << std::endl;
+}
+
+void SemiCnflearn::dumpusegments(std::ofstream& out, std::vector<char*>& f)
+{
+   out << "Start_uSegments" << std::endl;
+   for (unsigned int i = 0; i < f.size(); ++i)
+   {
+      out << '[' << i << "]=" << f[i] << std::endl;
+   }
+   out << "End_uSegments" << std::endl;
+}
+
+void SemiCnflearn::dumpbsegments(std::ofstream& out, std::vector<char*>& f)
+{
+   out << "Start_bSegments" << std::endl;
+   for (unsigned int i = 0; i < f.size(); ++i)
+   {
+      out << '[' << i << "]=" << f[i] << std::endl;
+   }
+   out << "End_bSegments" << std::endl;
+}
+
+void SemiCnflearn::dumpfeatures(std::ofstream& out)
+{
+   nodeptr ufnil = this->ufeatures->getnil();
+   nodeptr bfnil = this->bfeatures->getnil();
+   nodeptr usnil = this->usegments->getnil();
+   nodeptr bsnil = this->bsegments->getnil();
+
+   std::vector<char*> ufs(this->ufeatures->getsize());
+   this->callinv(this->ufeatures->table, ufnil, ufs);
+   this->dumpufeatures(out, ufs);
+   ufs.clear();
+
+   std::vector<char*> bfs(this->bfeatures->getsize());
+   this->callinv(this->bfeatures->table, bfnil, bfs);
+   this->dumpbfeatures(out, bfs);
+   bfs.clear();
+
+   std::vector<char*> uss(this->usegments->getsize());
+   this->callinv(this->usegments->table, usnil, uss);
+   this->dumpusegments(out, uss);
+   ufs.clear();
+
+   std::vector<char*> bss(this->bsegments->getsize());
+   this->callinv(this->bsegments->table, bsnil, bss);
+   this->dumpbsegments(out, bss);
+   bfs.clear();
+}
+
+void SemiCnflearn::save(const char *save)
+{
+   std::ofstream out(save);
+   out << "Params=" << this->parameters << std::endl;
+   out << "lLabels=" << this->llabelsize << std::endl;
+   out << "sLabels=" << this->slabelsize << std::endl;
+
+   /// local label id to surface
+   this->dumpllabels(out);
+
+   /// segment label to local labels
+   this->dumpsl2ll(out);
+
+   /// fwit
+   this->dumpfwit(out);
+
+   /// params
+   this->dumpparams(out);
+
+   /// features
+   this->dumpfeatures(out);
 }
