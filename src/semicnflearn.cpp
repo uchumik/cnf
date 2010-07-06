@@ -27,7 +27,7 @@ SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int po
    /// feature bound
    this->fbound = 3;
    /// segment bound
-   this->sbound = 2;
+   this->sbound = 1;
    /// lambda
    this->lambda = 1;
    /// alpha
@@ -899,6 +899,7 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
             {
                this->upbsweight(id,(*nit)->sl,(*nit)->bt,v,-e);
             }
+            expect += e;
          }
          else
          {
