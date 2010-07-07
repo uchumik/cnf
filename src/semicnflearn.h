@@ -1,3 +1,8 @@
+/**
+ * A Hybrid Markov/Semi-markov Conditional Neural Fields
+ * written by Kei Uchiumi
+ * Copyright (C) 2010 - Kei Uchiumi
+ */
 # ifndef SEMI_CNF_L_H
 # define SEMI_CNF_L_H
 

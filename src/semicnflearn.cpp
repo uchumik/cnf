@@ -27,7 +27,7 @@ SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int po
    /// feature bound
    this->fbound = 3;
    /// segment bound
-   this->sbound = 1;
+   this->sbound = 2;
    /// lambda
    this->lambda = 1;
    /// alpha
@@ -1803,7 +1803,7 @@ void SemiCnflearn::dumpllabels(std::ofstream& out)
    out << "Start_lLabel" << std::endl;
    for (unsigned int i = 0; i < this->label2surf.size(); ++i)
    {
-      out << '[' << i << "]=" << this->label2surf[i] << std::endl;
+      out << '[' << i << "] " << this->label2surf[i] << std::endl;
    }
    out << "End_lLabel" << std::endl;
 }
@@ -1813,7 +1813,7 @@ void SemiCnflearn::dumpsl2ll(std::ofstream& out)
    out << "Start_sl2ll" << std::endl;
    for (unsigned int i = 0; i < this->sl2ll.size(); ++i)
    {
-      out << '[' << i << "]=" << this->sl2ll[i].bl << ' ' << this->sl2ll[i].il << std::endl;
+      out << '[' << i << "] " << this->sl2ll[i].bl << ' ' << this->sl2ll[i].il << std::endl;
    }
    out << "End_sl2ll" << std::endl;
 }
@@ -1823,7 +1823,7 @@ void SemiCnflearn::dumpfwit(std::ofstream& out)
    out << "Start_Fwit" << std::endl;
    for (unsigned int i = 0; i < this->fwit.size(); ++i)
    {
-      out << '[' << i << "]=" << this->fwit[i] << std::endl;
+      out << '[' << i << "] " << this->fwit[i] << std::endl;
    }
    out << "End_Fwit" << std::endl;
 }
@@ -1834,7 +1834,7 @@ void SemiCnflearn::dumpparams(std::ofstream& out)
    out.setf(std::ios::scientific);
    for (unsigned int i = 0; i < this->parameters; ++i)
    {
-      out << '[' << i << "]=" << *(this->model+i) << std::endl;
+      out << '[' << i << "] " << *(this->model+i) << std::endl;
    }
    out.unsetf(std::ios::scientific);
    out << "End_Params" << std::endl;
@@ -1870,7 +1870,7 @@ void SemiCnflearn::dumpufeatures(std::ofstream& out, std::vector<char*>& f)
    out << "Start_uFeatures" << std::endl;
    for (unsigned int i = 0; i < f.size(); ++i)
    {
-      out << '[' << i << "]=" << f[i] << std::endl;
+      out << '[' << i << "] " << f[i] << std::endl;
    }
    out << "End_uFeatures" << std::endl;
 }
@@ -1880,7 +1880,7 @@ void SemiCnflearn::dumpbfeatures(std::ofstream& out, std::vector<char*>& f)
    out << "Start_bFeatures" << std::endl;
    for (unsigned int i = 0; i < f.size(); ++i)
    {
-      out << '[' << i << "]=" << f[i] << std::endl;
+      out << '[' << i << "] " << f[i] << std::endl;
    }
    out << "End_bFeatures" << std::endl;
 }
@@ -1890,7 +1890,7 @@ void SemiCnflearn::dumpusegments(std::ofstream& out, std::vector<char*>& f)
    out << "Start_uSegments" << std::endl;
    for (unsigned int i = 0; i < f.size(); ++i)
    {
-      out << '[' << i << "]=" << f[i] << std::endl;
+      out << '[' << i << "] " << f[i] << std::endl;
    }
    out << "End_uSegments" << std::endl;
 }
@@ -1900,7 +1900,7 @@ void SemiCnflearn::dumpbsegments(std::ofstream& out, std::vector<char*>& f)
    out << "Start_bSegments" << std::endl;
    for (unsigned int i = 0; i < f.size(); ++i)
    {
-      out << '[' << i << "]=" << f[i] << std::endl;
+      out << '[' << i << "] " << f[i] << std::endl;
    }
    out << "End_bSegments" << std::endl;
 }
@@ -1936,9 +1936,9 @@ void SemiCnflearn::dumpfeatures(std::ofstream& out)
 void SemiCnflearn::save(const char *save)
 {
    std::ofstream out(save);
-   out << "Params=" << this->parameters << std::endl;
-   out << "lLabels=" << this->llabelsize << std::endl;
-   out << "sLabels=" << this->slabelsize << std::endl;
+   out << "Params " << this->parameters << std::endl;
+   out << "lLabels " << this->llabelsize << std::endl;
+   out << "sLabels " << this->slabelsize << std::endl;
 
    /// local label id to surface
    this->dumpllabels(out);
