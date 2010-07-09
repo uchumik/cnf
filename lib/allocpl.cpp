@@ -60,7 +60,15 @@ void* PoolAlloc::alloc (size_t bytesToAllocate)
 {
    if (bytesToAllocate > this->blocksize)
    {
-      return ::operator new (bytesToAllocate);
+      try
+      {
+         return ::operator new (bytesToAllocate);
+      }
+      catch (std::bad_alloc e)
+      {
+         fprintf (stderr, "ERR: Failed to allocate %zd\n", bytesToAllocate);
+         exit(1);
+      }
    }
 
    if (this->freelist == 0)
@@ -83,7 +91,15 @@ int PoolAlloc::release (void *p)
    }
    else
    {
-      ::operator delete(p);
+      try
+      {
+         ::operator delete(p);
+      }
+      catch (std::bad_alloc e)
+      {
+         fprintf (stderr, "ERR: Failed to release\n");
+         exit(1);
+      }
    }
 
    return 0;

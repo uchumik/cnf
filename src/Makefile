@@ -4,7 +4,7 @@ INC= -I/opt/local/include -I. -I../lib
 LIB= -L/opt/local/lib -L../lib
 
 #bin= cnftagger cnflearn sequencetest
-bin= cnftagger cnflearn
+bin= cnftagger cnflearn semicnftagger semicnflearn
 
 all: $(bin)
 
@@ -25,6 +25,24 @@ cnflearn_main.o: cnflearn_main.cpp
 
 cnflearn.o: cnflearn.cpp
 	$(CXX) $(DEF) -c cnflearn.cpp $(INC) $(LIB)
+
+semicnftagger: semicnftagger_main.o semicnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+	$(CXX) $(DEF) semicnftagger_main.o semicnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnftagger $(INC) $(LIB)
+
+semicnflearn: semicnflearn_main.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+	$(CXX) $(DEF) semicnflearn_main.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnflearn $(INC) $(LIB)
+
+semicnflearn_main.o: semicnflearn_main.cpp
+	$(CXX) $(DEF) -c semicnflearn_main.cpp $(INC) $(LIB)
+
+semicnftagger_main.o: semicnftagger_main.cpp
+	$(CXX) $(DEF) -c semicnftagger_main.cpp $(INC) $(LIB)
+
+semicnftagger.o: semicnftagger.cpp
+	$(CXX) $(DEF) -c semicnftagger.cpp $(INC) $(LIB)
+
+semicnflearn.o: semicnflearn.cpp
+	$(CXX) $(DEF) -c semicnflearn.cpp $(INC) $(LIB)
 
 sparsevect.o: ../lib/sparsevect.cpp
 	$(CXX) $(DEF) -c ../lib/sparsevect.cpp $(INC) $(LIB)
@@ -52,4 +70,4 @@ allocpl.o: ../lib/allocpl.cpp
 	$(CXX) $(DEF) -c ../lib/allocpl.cpp $(INC) $(LIB)
 
 clean:
-	@rm -rf *.o ../lib/*.o sequencetest cnflearn cnftagger *.core
+	@rm -rf *.o ../lib/*.o sequencetest cnflearn cnftagger *.core $(bin)

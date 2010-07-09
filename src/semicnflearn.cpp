@@ -12,7 +12,7 @@
 # include <fstream>
 
 # define SCNF_BUFSIZE 1024
-# define SCNF_BLOCK 128
+# define SCNF_BLOCK 256
 
 SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int pool)
 {
@@ -1496,7 +1496,7 @@ void SemiCnflearn::mapping(char *l, int id)
 {
    nodeptr nil = this->labels->getnil();
    int bi = -1; int ii = -1;
-   if (*l == 'O')
+   if (std::strcmp(l,"O") == 0)
    {
       nodeptr *on = this->labels->get(l);
       int bi = (*on)->val; int ii = (*on)->val;
