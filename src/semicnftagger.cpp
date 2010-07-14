@@ -928,6 +928,14 @@ void SemiCnftagger::viterbi(Sequence *s,
    this->initlattice(lattice);
 
    /// viterbi
+   int ebsid = -1;
+   int ebstmpl = -1;
+   if (this->tonly)
+   {
+      nodeptr *n = this->bsegments->get("T");
+      ebsid = (*n)->val;
+      ebstmpl = this->totmpl;
+   }
    std::vector<vnode_t>::iterator it = lattice.begin();
    for (; it != lattice.end(); ++it)
    {
@@ -948,6 +956,11 @@ void SemiCnftagger::viterbi(Sequence *s,
                      (*nit)->bid,
                      -1);
                c += this->getbscost(id, (*nit)->bt, (*nit)->sl);
+            }
+            if (this->tonly)
+            {
+               int bsid = this->getbsid((it==lattice.begin()),(it+1==lattice.end()),ebsid,-1);
+               c += this->getbscost(bsid, ebstmpl, (*nit)->sl);
             }
             (*nit)->_lcost += c;
          }
@@ -972,6 +985,11 @@ void SemiCnftagger::viterbi(Sequence *s,
                         (*pit)->sl);
                   c += this->getbscost(id, (*nit)->bt, (*nit)->sl);
                }
+               if (this->tonly)
+               {
+                  int bsid = this->getbsid((it==lattice.begin()),(it+1==lattice.end()),ebsid,(*pit)->sl);
+                  c += this->getbscost(bsid, ebstmpl, (*nit)->sl);
+               }
                if (pit == (*it).prev.begin())
                {
                   max = c; join = *pit;
@@ -992,14 +1010,6 @@ void SemiCnftagger::viterbi(Sequence *s,
       nodeptr *n = this->bfeatures->get("B");
       e.bf.push_back((*n)->val);
       e.bt.push_back(this->botmpl);
-   }
-   int ebsid = -1;
-   int ebstmpl = -1;
-   if (this->tonly)
-   {
-      nodeptr *n = this->bsegments->get("T");
-      ebsid = (*n)->val;
-      ebstmpl = this->totmpl;
    }
    --it; // eos
    float max = 0;
