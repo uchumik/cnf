@@ -96,8 +96,8 @@ nodeptr Dic::insert (char *word)
    int len = std::strlen(word) + 1;
    n = (nodeptr)this->ac->alloc(size);
    n->key = (char*)this->ac->alloc(len);
-   std::strncpy(n->key,word,len);
-   *(n->key+len) = '\0';
+   std::strncpy(n->key,word,len-1);
+   *(n->key+len-1) = '\0';
    if (this->mode == CountUp)
    {
       n->val = 1;
