@@ -16,6 +16,9 @@
 # include <myutil.h>
 # include <sparsevect.h>
 
+typedef std::vector<char*> segments_t;
+typedef std::vector<int>::iterator findex_t;
+
 typedef struct
 {
    int sl;
@@ -40,17 +43,22 @@ typedef struct
 
 typedef struct
 {
+   int *id; // segment id
+   int *tid; // template id
+   unsigned int size;
+} sfeature_t;
+
+typedef struct
+{
    int sl;  // segment label
    int bl;  // begin of local label
    int il;  // inside of local label
-   int uid; // unigram segment id
-   int bid; // bigram segment id
-   int ut;  // unigram segment template id
-   int bt;  // bigram segment template id
    int len; // length
    float _alpha;
    float _beta;
    float _lcost;
+   sfeature_t us; // unigram segment feature
+   sfeature_t bs; // bigram segment feature
 } segment_t;
 
 typedef struct
@@ -253,7 +261,7 @@ class SemiCnflearn
        * @param current current position
        * @param segments segments
        */
-      int sexpand(std::string& t, Sequence *s, int current, std::vector<char*>& segments);
+      int sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments);
       /**
        * feature rejection
        */
@@ -337,7 +345,7 @@ class SemiCnflearn
       /**
        * update unigram segment feature weight
        */
-      void upusweight(int label, int usid, int tmpl, SparseVector *v, float expect);
+      void upusweight(int label, sfeature_t *us, SparseVector *v, float expect);
       /**
        * update bigram segment feature weight
        */

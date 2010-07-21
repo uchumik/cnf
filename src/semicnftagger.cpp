@@ -5,7 +5,7 @@
 # include <string>
 
 # define SCNF_BUFSIZE 1024
-# define SCNF_BLOCK 128
+# define SCNF_BLOCK 64
 
 SemiCnftagger::SemiCnftagger(const char *tmpl, unsigned int pool)
 {
@@ -110,6 +110,14 @@ bool SemiCnftagger::check(std::string& t)
          }
          *p++ = '\0';
          int len = atoi(tp); // max length
+         tp = p;
+         for (; *p != ',' && *p != '\0'; ++p) ;
+         if (*p == '\0')
+         {
+            break;
+         }
+         *p++ = '\0';
+         atoi(tp); // col
          tp = p;
          for (; *p != ']' && *p != '\0'; ++p) ;
          if (*p == '\0')
@@ -543,6 +551,7 @@ void SemiCnftagger::read(const char *model)
    this->valid = true;
 }
 
+
 void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, AllocMemdiscard *cache)
 {
    int size = sq->getRowSize();
@@ -557,10 +566,10 @@ void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, Alloc
       this->tmpli = 0;
       int ulen = 0;
       int blen = 0;
-      int ustmpl = 0;
-      int bstmpl = 0;
-      std::vector<char*> us;
-      std::vector<char*> bs;
+      std::vector<segments_t> us;
+      std::vector<segments_t> bs;
+      std::vector<int> butmpl; // begin id of unigram segment tmpl
+      std::vector<int> bbtmpl; // begin id of bigram segment tmpl
       while (std::getline(in, line))
       {
          MyUtil::chomp(line);
@@ -595,87 +604,130 @@ void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, Alloc
          else if (line[0] == 'S')
          {
             ulen = this->sexpand(line, sq, i, us);
-            ustmpl = this->tmpli;
+            butmpl.push_back(this->tmpli);
             this->tmpli+=ulen;
          }
          else if (line[0] == 'T')
          {
             blen = this->sexpand(line, sq, i, bs);
-            bstmpl = this->tmpli;
+            bbtmpl.push_back(this->tmpli);
             this->tmpli+=blen;
          }
       }
       /// TODO: リファクタすべし
       /// make segments
-      std::vector<char*>::iterator usit = us.begin();
-      std::vector<char*>::iterator bsit = bs.begin();
-      int uslen = 1;
-      int bslen = 1;
+      unsigned int uslen = 1;
+      unsigned int bslen = 1;
+      int ustmpl = 0;
+      int bstmpl = 0;
       int lsize = this->slabelsize;
-      while (!(usit == us.end() && bsit == bs.end()))
+      while (!(uslen == us.size() && bslen == bs.size()))
       {
+         if (
+            ( (uslen < us.size() && us[uslen].size() == 0) && 
+            (bslen < bs.size() && bs[bslen].size() == 0) ) || 
+            ( uslen == us.size() &&
+            (bslen < bs.size()) &&  bs[bslen].size() == 0) ||
+            ( bslen == bs.size() &&
+            (uslen < us.size() && us[uslen].size() == 0)))
+         {
+            break;
+         }
+         int ussize = us[uslen].size();
+         int bssize = bs[0].size();
+         if (bslen < bs.size())
+            bssize += bs[bslen].size();
          vsegment_t s;
          s.sl = -1; // segment label
          s.bl = -1; // local begin label
          s.il = -1; // local inside label
          s.len = uslen;
-         s.uid = -1; s.bid = -1;
-         s.ut = -1; s.bt = -1;
          s._lcost = 0.;
          s.join = NULL;
+         s.us.id = (int*)cache->alloc(sizeof(int)*ussize);
+         s.us.tid = (int*)cache->alloc(sizeof(int)*ussize);
+         s.us.size = 0;
+         s.bs.id = (int*)cache->alloc(sizeof(int)*bssize);
+         s.bs.tid = (int*)cache->alloc(sizeof(int)*bssize);
+         s.bs.size = 0;
+         // tonly check
+         if (bs[0].size() != 0)
+         {
+            if (std::strcmp(bs[0][0],"T") != 0)
+            {
+               std::cerr << "ERR: " << bs[0][0] << std::endl;
+               exit(1);
+            }
+            nodeptr *n = this->bsegments->get("T");
+            if (*n != bsnil)
+            {
+               s.bs.id[s.bs.size] = (*n)->val;
+               s.bs.tid[s.bs.size++] = this->totmpl;
+            }
+         }
          if (uslen < bslen)
          {
             s.len = bslen;
-            nodeptr *n = this->bsegments->get(*bsit);
-            if (*n != bsnil)
+            for (unsigned int j = 0; j < bs[bslen].size(); ++j)
             {
-               s.bid = (*n)->val;
-               s.bt = bstmpl;
+               nodeptr *n = this->bsegments->get(bs[bslen][j]);
+               if (*n != bsnil)
+               {
+                  s.bs.id[s.bs.size] = (*n)->val;
+                  s.bs.tid[s.bs.size++] = bbtmpl[j] + bstmpl;
+               }
             }
          }
          else if (uslen > bslen)
          {
-            nodeptr *n = this->usegments->get(*usit);
-            if (*n != usnil)
+            for (unsigned int j = 0; j < us[uslen].size(); ++j)
             {
-               s.uid = (*n)->val;
-               s.ut = ustmpl;
+               nodeptr *n = this->usegments->get(us[uslen][j]);
+               if (*n != usnil)
+               {
+                  s.us.id[s.us.size] = (*n)->val;
+                  s.us.tid[s.us.size++] = butmpl[j] + ustmpl;
+               }
             }
          }
          else
          {
-            nodeptr *n = NULL;
-            nodeptr *m = NULL;
-            if (usit != us.end())
-            {
-               n = this->usegments->get(*usit);
-            }
-            if (bsit != bs.end())
-            {
-               m = this->bsegments->get(*bsit);
-            }
-            if (n != NULL && *n != usnil)
-            {
-               s.uid = (*n)->val;
-               s.ut = ustmpl;
-            }
-            if (m != NULL && *m != bsnil)
-            {
-               s.bid = (*m)->val;
-               s.bt = bstmpl;
-            }
+            if (uslen < us.size())
+               for (unsigned int j = 0; j < us[uslen].size(); ++j)
+               {
+                  nodeptr *n = NULL;
+                  if (uslen < us.size())
+                  {
+                     n = this->usegments->get(us[uslen][j]);
+                  }
+                  if (n != NULL && *n != usnil)
+                  {
+                     s.us.id[s.us.size] = (*n)->val;
+                     s.us.tid[s.us.size] = butmpl[j] + ustmpl;
+                  }
+               }
+            if (bslen < bs.size())
+               for (unsigned int j = 0; j < bs[bslen].size(); ++j)
+               {
+                  nodeptr *m = NULL;
+                  if (bslen < bs.size())
+                  {
+                     m = this->bsegments->get(bs[bslen][j]);
+                  }
+                  if (m != NULL && *m != bsnil)
+                  {
+                     s.bs.id[s.bs.size] = (*m)->val;
+                     s.bs.tid[s.bs.size] = bbtmpl[j] + bstmpl;
+                  }
+               }
          }
-         if (usit != us.end())
+         if (uslen < us.size())
          {
-            this->ac->release(*usit);
-            ++usit;
             ++uslen;
             ++ustmpl;
          }
-         if (bsit != bs.end())
+         if (bslen < bs.size())
          {
-            this->ac->release(*bsit);
-            ++bsit;
             ++bslen;
             ++bstmpl;
          }
@@ -699,6 +751,23 @@ void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, Alloc
             {
                lattice[i+seg->len].prev.push_back(seg);
             }
+         }
+      }
+      // release
+      for (unsigned int i = 0; i < us.size(); ++i)
+      {
+         std::vector<char*>::iterator it = us[i].begin();
+         for (; it != us[i].end(); ++it)
+         {
+            this->ac->release(*it);
+         }
+      }
+      for (unsigned int i = 0; i < bs.size(); ++i)
+      {
+         std::vector<char*>::iterator it = bs[i].begin();
+         for (; it != bs[i].end(); ++it)
+         {
+            this->ac->release(*it);
          }
       }
    }
@@ -731,10 +800,10 @@ void SemiCnftagger::initlattice(std::vector<vnode_t>& lattice)
          int len = (*sit)->len;
          int slabel = (*sit)->sl;
          /// unigram segment cost
-         int usid = (*sit)->uid;
-         int ustmpl = (*sit)->ut;
-         if (usid > -1)
+         for (unsigned int ui = 0; ui < (*sit)->us.size; ++ui)
          {
+            int usid = (*sit)->us.id[ui];
+            int ustmpl = (*sit)->us.tid[ui];
             (*sit)->_lcost += this->getfw(this->bmid+1+usid*this->slabelsize+slabel, ustmpl);
          }
          /// token features cost
@@ -742,8 +811,8 @@ void SemiCnftagger::initlattice(std::vector<vnode_t>& lattice)
          {
             feature_t *t = &lattice[i+j].tokenf;
             /// unigram feature in segment
-            std::vector<int>::iterator ufit = t->uf.begin();
-            std::vector<int>::iterator utit = t->ut.begin();
+            findex_t ufit = t->uf.begin();
+            findex_t utit = t->ut.begin();
             int llabel = -1;
             if (j == 0)
             {
@@ -781,8 +850,8 @@ float SemiCnftagger::getbfcost(feature_t *f, int bias, int label)
 {
    int b = this->umid+1+bias+label;
    float ret = 0.;
-   std::vector<int>::iterator bfit = f->bf.begin();
-   std::vector<int>::iterator btit = f->bt.begin();
+   findex_t bfit = f->bf.begin();
+   findex_t btit = f->bt.begin();
    for (; bfit != f->bf.end(); ++bfit, ++btit)
    {
       int id = b + *bfit * (2*this->llabelsize+this->llabelsize*this->llabelsize);
@@ -857,7 +926,7 @@ char* SemiCnftagger::fexpand(std::string& t, Sequence *s, int current)
    return feature;
 }
 
-int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector<char*>& segments)
+int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments)
 {
    char b[t.size()];
    std::strcpy(b,t.c_str());
@@ -877,30 +946,37 @@ int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector
          for (; *p != ','; ++p) ;
          *p++ = '\0';
          len = atoi(tp);
+         if (segments.size() < (unsigned int)len+1)
+         {
+            segments.resize(len+1);
+         }
+         tp = p;
+         for (; *p != ','; ++p) ;
+         *p++ = '\0';
+         int col = atoi(tp);
          for (; *p != ']'; ++p) ;
          *p = '\0';
          tp = p+1;
          suffix += tp;
          /// generate segments
+         std::string str = prefix;
          for (int l = 1; l <= len; ++l)
          {
-            std::string str = prefix;
             if (current+l > size)
             {
                continue;
             }
-            for (int i = 0; i < l-1; ++i)
+            if (l-1 > 0)
             {
-               str += s->getToken(current+i,0);
                str += "/";
             }
-            str += s->getToken(current+l-1,0);
-            str += suffix;
+            str += s->getToken(current+l-1,col);
             if (str.size() > 0)
             {
-               char *segment = (char*)this->ac->alloc(sizeof(char*)*str.size());
+               char *segment = (char*)this->ac->alloc(sizeof(char*)*str.size() + sizeof(char*)*suffix.size());
                std::strcpy(segment, str.c_str());
-               segments.push_back(segment);
+               std::strcat(segment, suffix.c_str());
+               segments[l].push_back(segment);
             }
          }
       }
@@ -910,7 +986,11 @@ int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector
       prefix += tp;
       char *segment = (char*)this->ac->alloc(sizeof(char*)*prefix.size());
       std::strcpy(segment,prefix.c_str());
-      segments.push_back(segment);
+      if (segments.size() == 0)
+      {
+         segments.resize(1);
+      }
+      segments[0].push_back(segment);
    }
    return len;
 }
@@ -949,18 +1029,13 @@ void SemiCnftagger::viterbi(Sequence *s,
                      (it+1==lattice.end()),
                      -1),
                   (*nit)->bl);
-            if ((*nit)->bid > -1)
+            for (unsigned int bi = 0; bi < (*nit)->bs.size; ++bi)
             {
                int id = this->getbsid((it==lattice.begin()),
                      (it+1==lattice.end()),
-                     (*nit)->bid,
+                     (*nit)->bs.id[bi],
                      -1);
-               c += this->getbscost(id, (*nit)->bt, (*nit)->sl);
-            }
-            if (this->tonly)
-            {
-               int bsid = this->getbsid((it==lattice.begin()),(it+1==lattice.end()),ebsid,-1);
-               c += this->getbscost(bsid, ebstmpl, (*nit)->sl);
+               c += this->getbscost(id, (*nit)->bs.tid[bi], (*nit)->sl);
             }
             (*nit)->_lcost += c;
          }
@@ -977,18 +1052,13 @@ void SemiCnftagger::viterbi(Sequence *s,
                            (it+1==lattice.end()),
                            (*pit)->il),
                         (*nit)->bl);
-               if ((*nit)->bid > -1)
+               for (unsigned int bi = 0; bi < (*nit)->bs.size; ++bi)
                {
                   int id = this->getbsid((it==lattice.begin()),
                         (it+1==lattice.end()),
-                        (*nit)->bid,
+                        (*nit)->bs.id[bi],
                         (*pit)->sl);
-                  c += this->getbscost(id, (*nit)->bt, (*nit)->sl);
-               }
-               if (this->tonly)
-               {
-                  int bsid = this->getbsid((it==lattice.begin()),(it+1==lattice.end()),ebsid,(*pit)->sl);
-                  c += this->getbscost(bsid, ebstmpl, (*nit)->sl);
+                  c += this->getbscost(id, (*nit)->bs.tid[bi], (*nit)->sl);
                }
                if (pit == (*it).prev.begin())
                {

@@ -14,10 +14,10 @@ typedef struct vsegment
    int sl;  // segment label
    int bl;  // begin of local label
    int il;  // inside of local label
-   int uid; // unigram segment id
-   int bid; // bigram segment id
-   int ut;  // unigram segment template id
-   int bt;  // bigram segment template id
+   sfeature_t us; // unigram segment id
+   sfeature_t bs; // bigram segment id
+   //int ut;  // unigram segment template id
+   //int bt;  // bigram segment template id
    int len; // length
    float _lcost;
    vsegment *join;
@@ -133,7 +133,7 @@ class SemiCnftagger
        * @param current current position
        * @param segments segments
        */
-      int sexpand(std::string& t, Sequence *s, int current, std::vector<char*>& segments);
+      int sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments);
       /**
        * store feature set
        */

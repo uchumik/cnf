@@ -1,5 +1,6 @@
 # Unigram Segment
-S:%s[15,0]
+S01:%s[15,0,0]
+S02:%s[15,1,0]
 
 # Bigram Segment
 T
