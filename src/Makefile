@@ -4,15 +4,15 @@ INC= -I/opt/local/include -I. -I../lib
 LIB= -L/opt/local/lib -L../lib
 
 #bin= cnftagger cnflearn sequencetest
-bin= cnftagger cnflearn semicnftagger semicnflearn
+bin= cnftagger learn semicnftagger
 
 all: $(bin)
 
 cnftagger: cnftagger_main.o cnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
 	$(CXX) $(DEF) cnftagger_main.o cnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o cnftagger $(INC) $(LIB)
 
-cnflearn: cnflearn_main.o cnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
-	$(CXX) $(DEF) cnflearn_main.o cnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o cnflearn $(INC) $(LIB)
+learn: learn_main.o cnflearn.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+	$(CXX) $(DEF) learn_main.o cnflearn.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o learn $(INC) $(LIB)
 
 cnftagger_main.o: cnftagger_main.cpp
 	$(CXX) $(DEF) -c cnftagger_main.cpp $(INC) $(LIB)
@@ -20,8 +20,8 @@ cnftagger_main.o: cnftagger_main.cpp
 cnftagger.o: cnftagger.cpp
 	$(CXX) $(DEF) -c cnftagger.cpp $(INC) $(LIB)
 
-cnflearn_main.o: cnflearn_main.cpp
-	$(CXX) $(DEF) -c cnflearn_main.cpp $(INC) $(LIB)
+learn_main.o: learn_main.cpp
+	$(CXX) $(DEF) -c learn_main.cpp $(INC) $(LIB)
 
 cnflearn.o: cnflearn.cpp
 	$(CXX) $(DEF) -c cnflearn.cpp $(INC) $(LIB)
@@ -31,9 +31,6 @@ semicnftagger: semicnftagger_main.o semicnftagger.o sparsevect.o sequence.o dic.
 
 semicnflearn: semicnflearn_main.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
 	$(CXX) $(DEF) semicnflearn_main.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnflearn $(INC) $(LIB)
-
-semicnflearn_main.o: semicnflearn_main.cpp
-	$(CXX) $(DEF) -c semicnflearn_main.cpp $(INC) $(LIB)
 
 semicnftagger_main.o: semicnftagger_main.cpp
 	$(CXX) $(DEF) -c semicnftagger_main.cpp $(INC) $(LIB)

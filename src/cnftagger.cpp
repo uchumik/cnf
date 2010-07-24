@@ -15,6 +15,7 @@
 # define CNF_BUFSIZE 1024
 # define CNF_BLOCK 128
 
+using namespace Cnf;
 Cnftagger::Cnftagger(const char *tmpl, unsigned int pool)
 {
    this->tmpl = tmpl;

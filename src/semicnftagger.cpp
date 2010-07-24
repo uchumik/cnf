@@ -7,6 +7,7 @@
 # define SCNF_BUFSIZE 1024
 # define SCNF_BLOCK 64
 
+using namespace SemiCnf;
 SemiCnftagger::SemiCnftagger(const char *tmpl, unsigned int pool)
 {
    this->tmpl = tmpl;
