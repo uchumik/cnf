@@ -4,7 +4,6 @@
 # include <getopt.h>
 # include <string>
 # include <iostream>
-# include <vector>
 
 using namespace Cnf;
 using namespace SemiCnf;
@@ -271,4 +270,5 @@ int main (int argc, char **argv)
    {
       usage(argc,argv);
    }
+   return 0;
 }

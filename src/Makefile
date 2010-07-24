@@ -4,18 +4,18 @@ INC= -I/opt/local/include -I. -I../lib
 LIB= -L/opt/local/lib -L../lib
 
 #bin= cnftagger cnflearn sequencetest
-bin= cnftagger learn semicnftagger
+bin= tagger learner
 
 all: $(bin)
 
-cnftagger: cnftagger_main.o cnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
-	$(CXX) $(DEF) cnftagger_main.o cnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o cnftagger $(INC) $(LIB)
+tagger: tagger_main.o cnftagger.o semicnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+	$(CXX) $(DEF) tagger_main.o cnftagger.o semicnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o tagger $(INC) $(LIB)
 
-learn: learn_main.o cnflearn.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
-	$(CXX) $(DEF) learn_main.o cnflearn.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o learn $(INC) $(LIB)
+learner: learn_main.o cnflearn.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+	$(CXX) $(DEF) learn_main.o cnflearn.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o learner $(INC) $(LIB)
 
-cnftagger_main.o: cnftagger_main.cpp
-	$(CXX) $(DEF) -c cnftagger_main.cpp $(INC) $(LIB)
+tagger_main.o: tagger_main.cpp
+	$(CXX) $(DEF) -c tagger_main.cpp $(INC) $(LIB)
 
 cnftagger.o: cnftagger.cpp
 	$(CXX) $(DEF) -c cnftagger.cpp $(INC) $(LIB)
@@ -26,11 +26,11 @@ learn_main.o: learn_main.cpp
 cnflearn.o: cnflearn.cpp
 	$(CXX) $(DEF) -c cnflearn.cpp $(INC) $(LIB)
 
-semicnftagger: semicnftagger_main.o semicnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
-	$(CXX) $(DEF) semicnftagger_main.o semicnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnftagger $(INC) $(LIB)
+#semicnftagger: semicnftagger_main.o semicnftagger.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+#	$(CXX) $(DEF) semicnftagger_main.o semicnftagger.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnftagger $(INC) $(LIB)
 
-semicnflearn: semicnflearn_main.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
-	$(CXX) $(DEF) semicnflearn_main.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnflearn $(INC) $(LIB)
+#semicnflearn: semicnflearn_main.o semicnflearn.o sparsevect.o sequence.o dic.o allocmd.o allocpl.o
+#	$(CXX) $(DEF) semicnflearn_main.o semicnflearn.o sequence.o sparsevect.o dic.o allocmd.o allocpl.o -o semicnflearn $(INC) $(LIB)
 
 semicnftagger_main.o: semicnftagger_main.cpp
 	$(CXX) $(DEF) -c semicnftagger_main.cpp $(INC) $(LIB)
