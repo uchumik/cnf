@@ -8,16 +8,42 @@ template<class T>
 class Tagger
 {
    public:
+      /** Construct Tagger
+       * @param tmpl template
+       * @param poolsize poolsize for allocator
+       */
       Tagger(const char *tmpl, unsigned int poolsize);
       ~Tagger();
+      /** Read Modelfile
+       * @param model modelfile
+       */
       void read(const char *model);
+      /** Tagging to corpus
+       * @param corpus test-corpus
+       */
       void tagging(const char *corpus);
+      /** Predict Tags and set to labels
+       * @param s target sequence
+       * @param cache cache
+       * @param labels vector to store predicted labels
+       */
       void viterbi(Sequence *s,
             AllocMemdiscard *cache,
             std::vector<int>& labels);
+      /** Output labeled-sequence
+       * @param s sequence
+       * @param labels vector stored labels
+       */
       void output(Sequence *s, std::vector<int>& labels);
+      /** Set cachesize
+       * @param cache cachesize
+       */
       void setcache(unsigned int cachesize);
+      /** Set colsize of sequence
+       * @param colsize colsize of sequence
+       */
       void setsqcol(unsigned int sqcolsize);
+      /** Clear model parameter */
       void clear();
    private:
       Tagger();
