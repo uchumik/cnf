@@ -20,6 +20,7 @@
 # define CNF_BUFSIZE 1024
 # define CNF_BLOCK 128
 
+using namespace Cnf;
 Cnflearn::Cnflearn(const char *tmpl, const char *corpus, unsigned int pool)
 {
    this->tmpl = tmpl;
@@ -131,6 +132,11 @@ void Cnflearn::setpenalty(float w, float u, float t)
    this->c[1] = u;
    /// alpha t
    this->c[2] = t;
+}
+
+void Cnflearn::setlambda(float lambda)
+{
+   this->lambda = lambda;
 }
 
 void Cnflearn::decay(int t)

@@ -14,6 +14,7 @@
 # define SCNF_BUFSIZE 1024
 # define SCNF_BLOCK 64
 
+using namespace SemiCnf;
 SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int pool)
 {
    this->tmpl = tmpl;
@@ -98,6 +99,85 @@ bool SemiCnflearn::init()
    this->report();
    this->valid = true;
    return this->valid;
+}
+
+void SemiCnflearn::setcache(unsigned int cachesize)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->cachesize = cachesize;
+}
+
+void SemiCnflearn::setpenalty(float bs, float us, float bf, float uf, float t)
+{
+   this->c[0] = uf;
+   this->c[1] = bf;
+   this->c[2] = us;
+   this->c[3] = bs;
+   this->c[4] = t;
+}
+
+void SemiCnflearn::setfbound(unsigned int fbound)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->fbound = fbound;
+}
+
+void SemiCnflearn::setsbound(unsigned int sbound)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->sbound = sbound;
+}
+
+void SemiCnflearn::setlabelcol(unsigned int labelcol)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   if (labelcol >= this->sqcolsize)
+   {
+      std::cerr << "ERR: label_col >= sequence col size" << std::endl;
+      return;
+   }
+   this->labelcol = labelcol;
+}
+
+void SemiCnflearn::setsqcol(unsigned int sqcolsize)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->sqcolsize = sqcolsize;
+}
+
+void SemiCnflearn::setlambda(float lambda)
+{
+   this->lambda = lambda;
+}
+
+void SemiCnflearn::setalpha(float alpha)
+{
+   if (alpha <= 1.)
+   {
+      std::cerr << "ERR: alpha must be more than 1" << std::endl;
+      return;
+   }
+   this->alpha = alpha;
 }
 
 void SemiCnflearn::decay(int t)

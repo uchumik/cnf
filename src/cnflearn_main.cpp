@@ -1,6 +1,7 @@
 # include <cnflearn.h>
 # include <cstdio>
 
+using namespace Cnf;
 int main(int argc, char **argv)
 {
    Cnflearn cnf(*(argv+1), *(argv+2), 1000000);

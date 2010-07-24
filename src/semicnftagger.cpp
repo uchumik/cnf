@@ -47,6 +47,16 @@ SemiCnftagger::~SemiCnftagger()
 }
 
 
+void SemiCnftagger::setcache(unsigned int cachesize)
+{
+   this->cachesize = cachesize;
+}
+
+void SemiCnftagger::setsqcol(unsigned int sqcolsize)
+{
+   this->sqcolsize = sqcolsize;
+}
+
 bool SemiCnftagger::check(std::string& t)
 {
    char b[t.size()];
