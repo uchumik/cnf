@@ -114,6 +114,7 @@ int getparams(int argc, char **argv)
       std::cerr << std::endl;
       usage(argc,argv);
    }
+   return 0;
 }
 
 int main(int argc, char **argv)
