@@ -73,29 +73,6 @@ void Cnftagger::clear()
    }
 }
 
-/*
-void Cnftagger::setf2t(FILE *fp)
-{
-   char buf[CNF_BUFSIZE];
-   while (fgets(buf, CNF_BUFSIZE, fp) != NULL)
-   {
-      MyUtil::chomp(buf);
-      if (MyUtil::IsCommentOut(buf))
-      {
-         continue;
-      }
-      if (std::strncmp(buf,"End_FtoTmpl",11) == 0)
-      {
-         break;
-      }
-      char f[CNF_BUFSIZE];
-      int t = 0;
-      sscanf(buf,"%d:%s",&t,f);
-      this->f2t[f] = t;
-   }
-}
-*/
-
 void Cnftagger::setlabel(FILE *fp)
 {
    char buf[CNF_BUFSIZE];
@@ -106,7 +83,7 @@ void Cnftagger::setlabel(FILE *fp)
       {
          continue;
       }
-      if (std::strncmp(buf,"End_label",9) == 0)
+      if (std::strncmp(buf,"End_Label",9) == 0)
       {
          break;
       }
@@ -155,6 +132,7 @@ void Cnftagger::setfwit(FILE *fp)
 
 void Cnftagger::setparams(FILE *fp)
 {
+   fread(this->model,1,sizeof(float)*this->parameters,fp);
    char buf[CNF_BUFSIZE];
    while (fgets(buf, CNF_BUFSIZE, fp) != NULL)
    {
@@ -167,15 +145,6 @@ void Cnftagger::setparams(FILE *fp)
       {
          break;
       }
-      int id = -1;
-      float param = 0.;
-      sscanf(buf,"[%d]=%f",&id,&param);
-      if (id < 0)
-      {
-         fprintf (stderr,"Unknown parameter %s\n",buf);
-         exit (1);
-      }
-      this->model[id] = param;
    }
 }
 
@@ -249,7 +218,7 @@ void Cnftagger::read(const char *model)
       exit(1);
    }
    FILE *fp = NULL;
-   if ((fp = fopen(model,"r")) == NULL)
+   if ((fp = fopen(model,"rb")) == NULL)
    {
       fprintf (stderr,"Couldn't open %s\n",model);
       exit(1);
@@ -267,16 +236,13 @@ void Cnftagger::read(const char *model)
          int params = 0;
          sscanf (buf+7,"%d",&params);
          this->model = (float*)this->ac->alloc(sizeof(float)*params);
+         this->parameters = params;
       }
       else if (std::strncmp(buf,"Labels=",7) == 0)
       {
          sscanf(buf+7,"%d",&this->labelsize);
          this->label2surf.resize(this->labelsize);
       }
-      //else if (std::strncmp(buf,"Start_FtoTmpl",13) == 0)
-      //{
-      //   this->setf2t(fp);
-      //}
       else if (std::strncmp(buf,"Start_Label",11) == 0)
       {
          this->setlabel(fp);
@@ -608,18 +574,6 @@ void Cnftagger::viterbi(Sequence *s,
       e.bf.push_back((*n)->val);
       e.bt.push_back(this->botmpl);
    }
-   /*
-      char *b = "B";
-      int tmpl = this->f2t[b];
-      nodeptr *n = this->bfeatures->get(b);
-      nodeptr nil = this->bfeatures->getnil();
-      feature_t e;
-      if (*n != nil)
-      {
-      e.bf.push_back((*n)->val);
-      e.bt.push_back(tmpl);
-      }
-    */
    float max = 0;
    int joinid = 0;
    for (int j = 0; j < row; j++)

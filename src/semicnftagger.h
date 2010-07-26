@@ -185,6 +185,7 @@ namespace SemiCnf
          int tmpli;
          int smaxlen;
          int slen;
+         unsigned int parameters;
    };
 }
 # endif /* SEMI_CNF_T_H */

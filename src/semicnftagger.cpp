@@ -207,6 +207,7 @@ void SemiCnftagger::readparamsize(std::string& line)
       return;
    }
    this->model = (float*)this->ac->alloc(sizeof(float)*size);
+   this->parameters = size;
 }
 
 void SemiCnftagger::readllabelsize(std::string& line)
@@ -331,6 +332,7 @@ void SemiCnftagger::readfwit(std::ifstream& in)
 
 void SemiCnftagger::readparams(std::ifstream& in)
 {
+   in.read((char*)this->model, sizeof(float)*this->parameters);
    std::string line;
    while (std::getline(in,line))
    {
@@ -343,17 +345,6 @@ void SemiCnftagger::readparams(std::ifstream& in)
       {
          break;
       }
-      char l,r;
-      int i = -1; // index
-      float w = 0.; // weight
-      std::istringstream is(line);
-      is >> l >> i >> r >> w;
-      if (i < 0)
-      {
-         std::cerr << "ERR: " << line << std::endl;
-         exit(1);
-      }
-      this->model[i] = w;
    }
 }
 
@@ -496,7 +487,7 @@ void SemiCnftagger::read(const char *model)
       std::cerr << "ERR: Model is already initialized" << std::endl;
       exit(1);
    }
-   std::ifstream in(model);
+   std::ifstream in(model, std::ios::in|std::ios::binary);
    std::string line;
    while (std::getline(in,line))
    {

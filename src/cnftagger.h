@@ -140,6 +140,7 @@ namespace Cnf
 
          void initlattice(vnode **lattice,
                std::vector<feature_t>& featureset);
+         unsigned int parameters;
    };
 
 }

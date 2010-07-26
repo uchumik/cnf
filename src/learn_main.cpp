@@ -35,7 +35,7 @@ void usage(int argc, char **argv)
    std::cerr << "-t, --template=FILE\t" << "template" << std::endl;
    std::cerr << "-c, --corpus=FILE\t" << "training corpus" << std::endl;
    std::cerr << "-s, --save=FILE\t" << "modelfile" << std::endl;
-   std::cerr << "--l1\t" << "use L1-regularization" << std::endl;
+   std::cerr << "--l1\t" << "use L1-regularization(default)" << std::endl;
    std::cerr << "--l2\t" << "use L2-regularization" << std::endl;
    std::cerr << "--bound=INT\t" << "threshold of feature-frequency for CNF(default 3)" << std::endl;
    std::cerr << "--fbound=INT\t" << "threshold of token feature-frequency for Semi-CNF(default 3)" << std::endl;

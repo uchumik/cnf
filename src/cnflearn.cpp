@@ -839,10 +839,6 @@ void Cnflearn::extract(Sequence *s)
          char *f = this->expand(buf, s, i);
          nodeptr n = this->features->insert(f);
          this->ac->release(f);
-         if (n != NULL)
-         {
-            //this->f2t.insert(std::pair<char*,int>(n->key,tmpl));
-         }
          tmpl++;
       }
       fclose(fp);
@@ -988,26 +984,19 @@ void Cnflearn::inversef(nodeptr p, nodeptr nil, std::vector<char*>& f)
 void Cnflearn::save(const char *save)
 {
    FILE *fp = NULL;
-   if ((fp = fopen(save,"w")) == NULL)
+   if ((fp = fopen(save,"wb")) == NULL)
    {
       fprintf (stderr, "Couldn't open %s\n",save);
       exit(1);
    }
    fprintf (fp, "Params=%d\n",this->parameters);
    fprintf (fp, "Labels=%d\n",this->labels->getsize());
-   //fprintf (fp, "Start_FtoTmpl\n");
-   //std::map<std::string,int>::iterator f2tit = this->f2t.begin();
-   //for (; f2tit != this->f2t.end(); f2tit++)
-   //{
-   //   fprintf (fp, "%d:%s\n",(*f2tit).second,(*f2tit).first.c_str());
-   //}
-   //fprintf (fp, "End_FtoTmpl\n");
    fprintf (fp, "Start_Label\n");
    for (unsigned int i = 0; i < this->label2surf.size(); i++)
    {
       fprintf (fp, "[%d]=%s\n",i,this->label2surf[i]);
    }
-   fprintf (fp, "End_label\n");
+   fprintf (fp, "End_Label\n");
    fprintf (fp, "Start_Fwit\n");
    for (unsigned int i = 0; i < this->fwit.size(); i++)
    {
@@ -1015,10 +1004,7 @@ void Cnflearn::save(const char *save)
    }
    fprintf (fp, "End_Fwit\n");
    fprintf (fp, "Start_Params\n");
-   for (unsigned int i = 0; i < this->parameters; i++)
-   {
-      fprintf (fp, "[%d]=%e\n",i,*(this->model+i));
-   }
+   fwrite(this->model,1,sizeof(float)*this->parameters,fp);
    fprintf (fp, "End_Params\n");
    std::vector<char*> ufs(this->ufeatures->getsize());
    std::vector<char*> bfs(this->bfeatures->getsize());

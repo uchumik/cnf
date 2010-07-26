@@ -385,13 +385,6 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
             lattice[i].next.push_back(seg);
             if (i+seg->len <= size)
             {
-               /*
-                  std::cerr << "join"
-                  << ' ' << seg->sl << ' ' << seg->uid
-                  << ' ' << seg->len
-                  << ' ' << i << "->" << i+seg->len
-                  << std::endl;
-                */
                lattice[i+seg->len].prev.push_back(seg);
             }
          }
@@ -770,26 +763,6 @@ void SemiCnflearn::getclabels(Sequence *s, std::vector<correct_t>& cl)
          blabel = NULL;
          c = 1;
       }
-      /*
-         if (p < 0)
-         {
-         p = (*l)->val;
-         continue;
-         }
-         if (p == (*l)->val)
-         {
-         ++c;
-         }
-         else
-         {
-         correct_t n;
-         n.l = p;
-         n.len = c;
-         cl.push_back(n);
-         c= 1;
-         }
-         p = (*l)->val;
-       */
    }
    if (bflg)
    {
@@ -809,12 +782,6 @@ void SemiCnflearn::getclabels(Sequence *s, std::vector<correct_t>& cl)
       n.len = c;
       cl.push_back(n);
    }
-   /*
-      correct_t n;
-      n.l = p;
-      n.len = c;
-      cl.push_back(n);
-    */
 }
 
 void SemiCnflearn::upufweight(int label, feature_t *uf, SparseVector *v, float expect)
@@ -1077,26 +1044,6 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
                   c += this->getbscost(id, (*nit)->bs.tid[j], (*nit)->sl);
                }
                float e = SemiCnflearn::myexp((*pit)->_alpha + (*nit)->_beta + c - z);
-               /*
-                  if ((*pit)->_alpha+(*nit)->_beta+c-z > 0.)
-                  std::cerr << e
-                  << ' '
-                  << c
-                  << ' '
-                  << (*pit)->_alpha
-                  << ' '
-                  << (*nit)->_beta
-                  << ' '
-                  << z
-                  << ' '
-                  << (*pit)->_alpha+(*nit)->_beta+c-z
-                  << ' '
-                  << bias
-                  << ' '
-                  << this->getbfcost(&(*it).tokenf,bias,(*nit)->bl)
-                  << std::endl;
-                */
-               //this->upbfweight(bias, (*nit)->l, &(*it).tokenf, v, -e);
                this->upbfweight(bias, (*nit)->bl, &(*it).tokenf, v, -e);
                for (unsigned int j = 0; j < (*nit)->bs.size; ++j)
                {
@@ -1979,12 +1926,7 @@ void SemiCnflearn::dumpfwit(std::ofstream& out)
 void SemiCnflearn::dumpparams(std::ofstream& out)
 {
    out << "Start_Params" << std::endl;
-   out.setf(std::ios::scientific);
-   for (unsigned int i = 0; i < this->parameters; ++i)
-   {
-      out << '[' << i << "] " << *(this->model+i) << std::endl;
-   }
-   out.unsetf(std::ios::scientific);
+   out.write((char*)this->model, sizeof(float)*this->parameters);
    out << "End_Params" << std::endl;
 }
 
@@ -2083,7 +2025,7 @@ void SemiCnflearn::dumpfeatures(std::ofstream& out)
 
 void SemiCnflearn::save(const char *save)
 {
-   std::ofstream out(save);
+   std::ofstream out(save,std::ios::out|std::ios::binary);
    out << "Params " << this->parameters << std::endl;
    out << "lLabels " << this->llabelsize << std::endl;
    out << "sLabels " << this->slabelsize << std::endl;
