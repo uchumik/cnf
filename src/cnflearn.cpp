@@ -63,8 +63,6 @@ Cnflearn::Cnflearn(const char *tmpl, const char *corpus, unsigned int pool)
    this->botmpl = -1;
    /// template check
    this->tmplcheck();
-   /// feature extraction and encoding
-   this->extfeature();
    /// correct tags
    this->corrects = 0;
    /// tags
@@ -91,9 +89,9 @@ bool Cnflearn::init()
       this->ac->release(this->pcache);
       /// feature dic
       this->features = new Dic(this->ac, CountUp);
-      /// feature extraction and encoding
-      this->extfeature();
    }
+   /// feature extraction and encoding
+   this->extfeature();
    /// feature rejection and making featurefunctions
    this->boundfeature();
    /// init model and pcache

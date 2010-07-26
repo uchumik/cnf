@@ -65,8 +65,6 @@ SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int po
    this->slen = 0;
    /// template check
    this->tmplcheck();
-   /// feature extraction and encoding
-   this->extfeature();
    /// cachesize
    this->cachesize = 1024*100000;
    /// coefficients
@@ -90,6 +88,8 @@ SemiCnflearn::~SemiCnflearn()
 
 bool SemiCnflearn::init()
 {
+   /// feature extraction and encoding
+   this->extfeature();
    /// feature rejection and making feature functions
    this->boundfeature();
    this->boundsegment();
@@ -1440,7 +1440,7 @@ void SemiCnflearn::boundsegment()
 
 char* SemiCnflearn::fexpand(std::string& t, Sequence *s, int current)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
 
@@ -1470,6 +1470,7 @@ char* SemiCnflearn::fexpand(std::string& t, Sequence *s, int current)
    {
       f += tp;
    }
+   this->ac->release(b);
    char *feature = (char*)this->ac->alloc(sizeof(char*)*f.size()+1);
    std::strcpy(feature,f.c_str());
    return feature;
@@ -1477,7 +1478,7 @@ char* SemiCnflearn::fexpand(std::string& t, Sequence *s, int current)
 
 int SemiCnflearn::sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
    std::string prefix = "";
@@ -1541,6 +1542,7 @@ int SemiCnflearn::sexpand(std::string& t, Sequence *s, int current, std::vector<
       }
       segments[0].push_back(segment);
    }
+   this->ac->release(b);
    return len;
 }
 
@@ -1743,7 +1745,7 @@ void SemiCnflearn::extfeature()
 
 bool SemiCnflearn::check(std::string& t)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
 
@@ -1822,7 +1824,7 @@ bool SemiCnflearn::check(std::string& t)
          {
             break;
          }
-         *p++ = '\0';
+         *p = '\0';
          float t = atof(tp); // weight
          // expand template
          this->tmpli+=len;

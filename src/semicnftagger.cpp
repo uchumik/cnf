@@ -60,7 +60,7 @@ void SemiCnftagger::setsqcol(unsigned int sqcolsize)
 
 bool SemiCnftagger::check(std::string& t)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
 
@@ -135,7 +135,7 @@ bool SemiCnftagger::check(std::string& t)
          {
             break;
          }
-         *p++ = '\0';
+         *p = '\0';
          float t = atof(tp); // weight
          // expand template
          this->tmpli+=len;
@@ -155,6 +155,7 @@ bool SemiCnftagger::check(std::string& t)
    {
       okay = false;
    }
+   this->ac->release(b);
    return okay;
 }
 
@@ -893,7 +894,7 @@ int SemiCnftagger::getbsid(bool bos, bool eos, int bid, int label)
 
 char* SemiCnftagger::fexpand(std::string& t, Sequence *s, int current)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
 
@@ -923,6 +924,7 @@ char* SemiCnftagger::fexpand(std::string& t, Sequence *s, int current)
    {
       f += tp;
    }
+   this->ac->release(b);
    char *feature = (char*)this->ac->alloc(sizeof(char*)*f.size()+1);
    std::strcpy(feature,f.c_str());
    return feature;
@@ -930,7 +932,7 @@ char* SemiCnftagger::fexpand(std::string& t, Sequence *s, int current)
 
 int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments)
 {
-   char b[t.size()];
+   char *b = (char*)this->ac->alloc(t.size()+1);
    std::strcpy(b,t.c_str());
    char *tp = b;
    std::string prefix = "";
@@ -994,6 +996,7 @@ int SemiCnftagger::sexpand(std::string& t, Sequence *s, int current, std::vector
       }
       segments[0].push_back(segment);
    }
+   this->ac->release(b);
    return len;
 }
 
