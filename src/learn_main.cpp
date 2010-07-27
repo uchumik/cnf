@@ -10,7 +10,7 @@ using namespace SemiCnf;
 
 /* Parameters */
 static int regularize = 0;
-static unsigned int iter = 50;
+static int iter = 50;
 static unsigned int block = 64;
 static unsigned int pool = 1000000;
 static unsigned int bound = 3;
@@ -131,7 +131,7 @@ int set(const char *pname, const char *optarg)
    }
    else if (std::strcmp(pname,"iter") == 0)
    {
-      iter = (unsigned int)atoi(optarg);
+      iter = atoi(optarg);
    }
    else if (std::strcmp(pname,"sqcol") == 0)
    {
@@ -232,6 +232,20 @@ int getparams(int argc, char **argv)
    return 0;
 }
 
+bool check()
+{
+   if (tmpl == "" ||
+         corpus == "" ||
+         save == "" ||
+         sqcol <= 0 ||
+         lambda <= 0 || 
+         iter <= 0)
+   {
+      return false;
+   }
+   return true;
+}
+
 int main (int argc, char **argv)
 {
    if (argc < 7)
@@ -239,6 +253,10 @@ int main (int argc, char **argv)
       usage(argc,argv);
    }
    getparams(argc,argv);
+   if (!check())
+   {
+      usage(argc,argv);
+   }
    if (algorithm == "cnf")
    {
       Learner<Cnflearn> learner(tmpl.c_str(), corpus.c_str(), pool);
@@ -249,7 +267,7 @@ int main (int argc, char **argv)
       learner.setlabelcol(labelcol);
       learner.setlambda(lambda);
       learner.init();
-      learner.learn(iter,regularize);
+      learner.learn((unsigned int)iter,regularize);
       learner.save(save.c_str());
    }
    else if (algorithm == "semicnf")
@@ -262,8 +280,9 @@ int main (int argc, char **argv)
       learner.setsqcol(sqcol);
       learner.setlabelcol(labelcol);
       learner.setlambda(lambda);
+      learner.setalpha(alpha);
       learner.init();
-      learner.learn(iter,regularize);
+      learner.learn((unsigned int)iter,regularize);
       learner.save(save.c_str());
    }
    else

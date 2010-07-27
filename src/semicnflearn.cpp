@@ -1705,6 +1705,13 @@ void SemiCnflearn::extlabel(Sequence *s)
       }
       else /// O label
       {
+         if (bflg)
+         {
+            if (c > this->smaxlen)
+            {
+               this->smaxlen = c;
+            }
+         }
          bflg = false;
          c = 1;
       }
