@@ -253,32 +253,28 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
       }
       /// TODO: リファクタすべし
       /// make segments
-      unsigned int uslen = 1;
-      unsigned int bslen = 1;
-      int ustmpl = 0;
-      int bstmpl = 0;
-      int lsize = this->slabelsize;
-      while (!(uslen == us.size() && bslen == bs.size()))
+      int len = SemiCnflearn::max(ulen,blen);
+      for (int j = 1; j <= len; ++j)
       {
-         if (
-            ( (uslen < us.size() && us[uslen].size() == 0) && 
-            (bslen < bs.size() && bs[bslen].size() == 0) ) || 
-            ( uslen == us.size() &&
-            (bslen < bs.size()) &&  bs[bslen].size() == 0) ||
-            ( bslen == bs.size() &&
-            (uslen < us.size() && us[uslen].size() == 0)))
+         int ussize = 0;
+         int bssize = 0;
+         if (j < (int)us.size())
          {
-            break;
+            ussize = us[j].size();
          }
-         int ussize = us[uslen].size();
-         int bssize = bs[0].size();
-         if (bslen < bs.size())
-            bssize += bs[bslen].size();
+         if (this->tonly)
+         {
+            bssize = bs[0].size();
+         }
+         if (j < (int)bs.size())
+         {
+            bssize += bs[j].size();
+         }
          segment_t s;
          s.sl = -1; // segment label
          s.bl = -1; // local begin label
          s.il = -1; // local inside label
-         s.len = uslen;
+         s.len = j;
          s._alpha = 0.; s._beta = 0.; s._lcost = 0.;
          s.us.id = (int*)cache->alloc(sizeof(int)*ussize);
          s.us.tid = (int*)cache->alloc(sizeof(int)*ussize);
@@ -287,7 +283,7 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
          s.bs.tid = (int*)cache->alloc(sizeof(int)*bssize);
          s.bs.size = 0;
          // tonly check
-         if (bs[0].size() != 0)
+         if (this->tonly && bs[0].size() != 0)
          {
             if (std::strcmp(bs[0][0],"T") != 0)
             {
@@ -301,74 +297,29 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
                s.bs.tid[s.bs.size++] = this->totmpl;
             }
          }
-         if (uslen < bslen)
+         // usegment feature
+         for (int k = 0; k < ussize; ++k)
          {
-            s.len = bslen;
-            for (unsigned int j = 0; j < bs[bslen].size(); ++j)
+            nodeptr *n = this->usegments->get(us[j][k]);
+            if (*n != usnil)
             {
-               nodeptr *n = this->bsegments->get(bs[bslen][j]);
-               if (*n != bsnil)
-               {
-                  s.bs.id[s.bs.size] = (*n)->val;
-                  s.bs.tid[s.bs.size++] = bbtmpl[j] + bstmpl;
-               }
+               s.us.id[s.us.size] = (*n)->val;
+               s.us.tid[s.us.size++] = butmpl[k] + j - 1;
             }
          }
-         else if (uslen > bslen)
+         // bsegment feature
+         //for (unsigned int k = 0; k < bs[j].size(); ++k)
+         for (int k = 0; k < bssize-(int)s.bs.size; ++k)
          {
-            for (unsigned int j = 0; j < us[uslen].size(); ++j)
+            nodeptr *n = this->bsegments->get(bs[j][k]);
+            if (*n != bsnil)
             {
-               nodeptr *n = this->usegments->get(us[uslen][j]);
-               if (*n != usnil)
-               {
-                  s.us.id[s.us.size] = (*n)->val;
-                  s.us.tid[s.us.size++] = butmpl[j] + ustmpl;
-               }
+               s.bs.id[s.bs.size] = (*n)->val;
+               s.bs.tid[s.bs.size++] = bbtmpl[k] + j - 1;
             }
          }
-         else
-         {
-            if (uslen < us.size())
-               for (unsigned int j = 0; j < us[uslen].size(); ++j)
-               {
-                  nodeptr *n = NULL;
-                  if (uslen < us.size())
-                  {
-                     n = this->usegments->get(us[uslen][j]);
-                  }
-                  if (n != NULL && *n != usnil)
-                  {
-                     s.us.id[s.us.size] = (*n)->val;
-                     s.us.tid[s.us.size] = butmpl[j] + ustmpl;
-                  }
-               }
-            if (bslen < bs.size())
-               for (unsigned int j = 0; j < bs[bslen].size(); ++j)
-               {
-                  nodeptr *m = NULL;
-                  if (bslen < bs.size())
-                  {
-                     m = this->bsegments->get(bs[bslen][j]);
-                  }
-                  if (m != NULL && *m != bsnil)
-                  {
-                     s.bs.id[s.bs.size] = (*m)->val;
-                     s.bs.tid[s.bs.size] = bbtmpl[j] + bstmpl;
-                  }
-               }
-         }
-         if (uslen < us.size())
-         {
-            ++uslen;
-            ++ustmpl;
-         }
-         if (bslen < bs.size())
-         {
-            ++bslen;
-            ++bstmpl;
-         }
-
-         for (int l = 0; l < lsize; ++l)
+         // label expand
+         for (unsigned int l = 0; l < this->slabelsize; ++l)
          {
             segment_t *seg = (segment_t*)cache->alloc(sizeof(segment_t));
             *seg = s;
@@ -445,6 +396,10 @@ void SemiCnflearn::initlattice(std::vector<node_t>& lattice)
          /// token features cost
          for (int j = 0; j < len; ++j)
          {
+            if ((unsigned int)i+j >= lattice.size())
+            {
+               break;
+            }
             feature_t *t = &lattice[i+j].tokenf;
             /// unigram feature in segment
             findex_t ufit = t->uf.begin();
@@ -1013,6 +968,7 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
             }
             float e = SemiCnflearn::myexp((*nit)->_beta + c - z);
             this->upbfweight(bias, (*nit)->bl, &(*it).tokenf, v, -e);
+            //std::cerr << (*nit)->bs.size << std::endl;
             for (unsigned int j = 0; j < (*nit)->bs.size; ++j)
             {
                int id = -1;
@@ -1070,8 +1026,11 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
          /// token feature
          for (int j = 0; j < len; ++j)
          {
+            if ((unsigned int)i+j >= lattice.size())
+            {
+               break;
+            }
             /// unigram feature
-            /// bigram feature
             if (j == 0)
             {
                /// unigram feature
@@ -1080,6 +1039,7 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
             }
             /// unigram feature
             this->upufweight((*nit)->il, &(*(it+j)).tokenf, v, -expect);
+            /// bigram feature
             int bias = this->getbfbias(false,false,(*nit)->il);
             this->upbfweight(bias, (*nit)->il, &(*(it+j)).tokenf, v, -expect);
          }
@@ -1471,7 +1431,7 @@ char* SemiCnflearn::fexpand(std::string& t, Sequence *s, int current)
       f += tp;
    }
    this->ac->release(b);
-   char *feature = (char*)this->ac->alloc(sizeof(char*)*f.size()+1);
+   char *feature = (char*)this->ac->alloc(sizeof(char)*f.size()+1);
    std::strcpy(feature,f.c_str());
    return feature;
 }
@@ -1523,7 +1483,7 @@ int SemiCnflearn::sexpand(std::string& t, Sequence *s, int current, std::vector<
             str += s->getToken(current+l-1,col);
             if (str.size() > 0)
             {
-               char *segment = (char*)this->ac->alloc(sizeof(char*)*str.size() + sizeof(char*)*suffix.size());
+               char *segment = (char*)this->ac->alloc(sizeof(char)*str.size() + sizeof(char)*suffix.size() + 1);
                std::strcpy(segment, str.c_str());
                std::strcat(segment, suffix.c_str());
                segments[l].push_back(segment);
@@ -1534,7 +1494,7 @@ int SemiCnflearn::sexpand(std::string& t, Sequence *s, int current, std::vector<
    if (len == 0 && *tp != '\0') /// tonly
    {
       prefix += tp;
-      char *segment = (char*)this->ac->alloc(sizeof(char*)*prefix.size());
+      char *segment = (char*)this->ac->alloc(sizeof(char)*prefix.size() + 1);
       std::strcpy(segment,prefix.c_str());
       if (segments.size() == 0)
       {
@@ -1860,6 +1820,7 @@ bool SemiCnflearn::check(std::string& t)
    {
       okay = false;
    }
+   this->ac->release(b);
    return okay;
 }
 
