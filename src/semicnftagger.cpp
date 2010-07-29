@@ -607,21 +607,21 @@ void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, Alloc
          else if (line[0] == 'S')
          {
             int slen = this->sexpand(line, sq, i, us);
-            ulen = SemiCnflearn::max(ulen,slen);
+            ulen = (int)SemiCnflearn::max(ulen,slen);
             butmpl.push_back(this->tmpli);
             this->tmpli+=slen;
          }
          else if (line[0] == 'T')
          {
             int tlen = this->sexpand(line, sq, i, bs);
-            blen = SemiCnflearn::max(blen,tlen);
+            blen = (int)SemiCnflearn::max(blen,tlen);
             bbtmpl.push_back(this->tmpli);
             this->tmpli+=tlen;
          }
       }
       /// TODO: リファクタすべし
       /// make segments
-      int len = SemiCnflearn::max(ulen,blen);
+      int len = (int)SemiCnflearn::max(ulen,blen);
       for (int j = 1; j <= len; ++j)
       {
          int ussize = 0;
