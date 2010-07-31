@@ -30,6 +30,7 @@ namespace SemiCnf
       std::vector<vsegment_t*> prev;
       std::vector<vsegment_t*> next;
       feature_t tokenf;
+      float *l;
    } vnode_t;
 
    class SemiCnftagger
@@ -140,6 +141,9 @@ namespace SemiCnf
           * store feature set
           */
          void storefset(Sequence *s, std::vector<vnode_t>& lattice, AllocMemdiscard *cache);
+         /** store ufeature cache
+         */
+         void storeufcache(vnode_t *node);
          /**
           * init lattice
           */

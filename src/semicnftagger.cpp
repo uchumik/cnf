@@ -554,6 +554,22 @@ void SemiCnftagger::read(const char *model)
    this->valid = true;
 }
 
+void SemiCnftagger::storeufcache(vnode_t *node)
+{
+   for (int li = 0; li < (int)this->llabelsize; ++li)
+   {
+      feature_t *t = &node->tokenf;
+      findex_t ufit = t->uf.begin();
+      findex_t utit = t->ut.begin();
+      node->l[li] = 0.;
+      for (; ufit != t->uf.end(); ++ufit, ++utit)
+      {
+         int id = *ufit;
+         int tmpl = *utit;
+         node->l[li] += this->getfw(id*this->llabelsize+li, tmpl);
+      }
+   }
+}
 
 void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, AllocMemdiscard *cache)
 {
@@ -620,6 +636,10 @@ void SemiCnftagger::storefset(Sequence *sq, std::vector<vnode_t>& lattice, Alloc
          }
       }
       /// TODO: リファクタすべし
+      /// score cache for unigram features
+      lattice[i].l = (float*)cache->alloc(sizeof(float)*this->llabelsize);
+      this->storeufcache(&lattice[i]);
+
       /// make segments
       int len = (int)SemiCnflearn::max(ulen,blen);
       for (int j = 1; j <= len; ++j)
@@ -765,14 +785,12 @@ void SemiCnftagger::initlattice(std::vector<vnode_t>& lattice)
          /// token features cost
          for (int j = 0; j < len; ++j)
          {
-            if ((unsigned int)i+j >= lattice.size())
+            if ((unsigned int)i+j+1 >= lattice.size())
             {
                break;
             }
             feature_t *t = &lattice[i+j].tokenf;
             /// unigram feature in segment
-            findex_t ufit = t->uf.begin();
-            findex_t utit = t->ut.begin();
             int llabel = -1;
             if (j == 0)
             {
@@ -782,13 +800,7 @@ void SemiCnftagger::initlattice(std::vector<vnode_t>& lattice)
             {
                llabel = (*sit)->il;
             }
-            for (; ufit != t->uf.end(); ++ufit, ++utit)
-            {
-               int id = *ufit;
-               int tmpl = *utit;
-               (*sit)->_lcost
-                  += this->getfw(id*this->llabelsize+llabel, tmpl);
-            }
+            (*sit)->_lcost += lattice[i+j].l[llabel];
             /// bigram feature in segment
             if (j == 0)
             {

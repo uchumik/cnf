@@ -68,6 +68,8 @@ namespace SemiCnf
       std::vector<segment_t*> prev;
       std::vector<segment_t*> next;
       feature_t tokenf;
+      float *l;
+      float *ue;
    } node_t;
 
    class SemiCnflearn
@@ -299,6 +301,9 @@ namespace SemiCnf
           * store feature set
           */
          void storefset(Sequence *s, std::vector<node_t>& lattice, AllocMemdiscard *cache);
+         /** store ufeature cache
+         */
+         void storeufcache(node_t *node);
          /**
           * init lattice
           */

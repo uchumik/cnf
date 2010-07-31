@@ -189,6 +189,23 @@ void SemiCnflearn::decay(int t)
    this->cc = this->eta;
 }
 
+void SemiCnflearn::storeufcache(node_t *node)
+{
+   for (int li = 0; li < (int)this->llabelsize; ++li)
+   {
+      feature_t *t = &node->tokenf;
+      findex_t ufit = t->uf.begin();
+      findex_t utit = t->ut.begin();
+      node->l[li] = 0.;
+      for (; ufit != t->uf.end(); ++ufit, ++utit)
+      {
+         int id = *ufit;
+         int tmpl = *utit;
+         node->l[li] += this->getfw(id*this->llabelsize+li, tmpl);
+      }
+   }
+}
+
 void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMemdiscard *cache)
 {
    int size = sq->getRowSize();
@@ -254,6 +271,16 @@ void SemiCnflearn::storefset(Sequence *sq, std::vector<node_t>& lattice, AllocMe
          }
       }
       /// TODO: リファクタすべし
+      /// score cache for unigram features
+      lattice[i].l = (float*)cache->alloc(sizeof(float)*this->llabelsize);
+      this->storeufcache(&lattice[i]);
+      /// expectation cache for unigram features
+      lattice[i].ue = (float*)cache->alloc(sizeof(float)*this->llabelsize);
+      for (unsigned int li = 0; li < this->llabelsize; ++li)
+      {
+         lattice[i].ue[li] = 0.;
+      }
+
       /// make segments
       int len = (int)SemiCnflearn::max(ulen,blen);
       for (int j = 1; j <= len; ++j)
@@ -398,14 +425,12 @@ void SemiCnflearn::initlattice(std::vector<node_t>& lattice)
          /// token features cost
          for (int j = 0; j < len; ++j)
          {
-            if ((unsigned int)i+j >= lattice.size())
+            if ((unsigned int)i+j+1 >= lattice.size())
             {
                break;
             }
             feature_t *t = &lattice[i+j].tokenf;
             /// unigram feature in segment
-            findex_t ufit = t->uf.begin();
-            findex_t utit = t->ut.begin();
             int llabel = -1;
             if (j == 0)
             {
@@ -415,13 +440,7 @@ void SemiCnflearn::initlattice(std::vector<node_t>& lattice)
             {
                llabel = (*sit)->il;
             }
-            for (; ufit != t->uf.end(); ++ufit, ++utit)
-            {
-               int id = *ufit;
-               int tmpl = *utit;
-               (*sit)->_lcost
-                  += this->getfw(id*this->llabelsize+llabel, tmpl);
-            }
+            (*sit)->_lcost += lattice[i+j].l[llabel];
             /// bigram feature in segment
             if (j == 0)
             {
@@ -1028,25 +1047,32 @@ void SemiCnflearn::getgradient(std::vector<node_t>& lattice, SparseVector *v, fl
          /// token feature
          for (int j = 0; j < len; ++j)
          {
-            if ((unsigned int)i+j >= lattice.size())
+            if ((unsigned int)i+j+1 >= lattice.size())
             {
                break;
             }
             /// unigram feature
             if (j == 0)
             {
-               /// unigram feature
-               this->upufweight((*nit)->bl, &(*(it+j)).tokenf, v, -expect);
+               lattice[i+j].ue[(*nit)->bl] += -expect;
                continue;
             }
             /// unigram feature
-            this->upufweight((*nit)->il, &(*(it+j)).tokenf, v, -expect);
+            lattice[i+j].ue[(*nit)->il] += -expect;
             /// bigram feature
             int bias = this->getbfbias(false,false,(*nit)->il);
             this->upbfweight(bias, (*nit)->il, &(*(it+j)).tokenf, v, -expect);
          }
          /// unigram segment
          this->upusweight((*nit)->sl, &(*nit)->us, v, -expect);
+      }
+      if (it+1 == lattice.end())
+         continue;
+
+      for (unsigned int li = 0; li < this->llabelsize; ++li)
+      {
+         /// unigram feature
+         this->upufweight(li, &(*it).tokenf, v, (*it).ue[li]);
       }
    }
    /// eos
