@@ -542,15 +542,25 @@ void SemiCnftagger::read(const char *model)
          this->readbsegments(in);
       }
    }
+   int bfparams = this->bfeatures->getsize();
+   int bsparams = this->bsegments->getsize();
    this->umid = this->llabelsize*this->ufeatures->getsize()-1;
    this->bmid = this->umid
       + (2*this->llabelsize+this->llabelsize*this->llabelsize)
-      * this->bfeatures->getsize();
+      * bfparams;
    this->usid = this->bmid
       + this->slabelsize*this->usegments->getsize();
    this->bsid = this->usid
       + (2*this->slabelsize+this->slabelsize*this->slabelsize)
-      * this->bsegments->getsize();
+      * bsparams;
+   if (this->bonly & !bfparams)
+   {
+      this->bonly = false;
+   }
+   if (this->tonly & !bsparams)
+   {
+      this->tonly = false;
+   }
    this->valid = true;
 }
 

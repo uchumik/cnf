@@ -1313,6 +1313,14 @@ void SemiCnflearn::initmodel()
    this->bsid = this->usid
       + (2*slabels+slabels*slabels)*bsparams;
    this->parameters = params;
+   if (!bfparams & this->bonly)
+   {
+      this->bonly = false;
+   }
+   if (!bsparams & this->tonly)
+   {
+      this->tonly = false;
+   }
    /**
     * model
     * +----------------------------------------------------+
