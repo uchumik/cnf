@@ -26,7 +26,7 @@ Sequence::~Sequence ()
 
 int Sequence::dump ()
 {
-   for (unsigned int i = 1; i < this->point/this->colsize; i++)
+   for (unsigned int i = 1; i <= this->point/this->colsize; i++)
    {
       for (unsigned int j = (i-1)*this->colsize; j < i*this->colsize; j++)
       {
