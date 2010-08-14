@@ -31,6 +31,10 @@ Cnflearn::Cnflearn(const char *tmpl, const char *corpus, unsigned int pool)
    this->labelcol = 2;
    /// sqcolsize
    this->sqcolsize = 3;
+   /// sqarraysize
+   this->sqarraysize = 1000;
+   /// sqallocsize
+   this->sqallocsize = 4096*1000;
    /// feature bound
    this->bound = 3;
    /// lambda
@@ -105,6 +109,16 @@ bool Cnflearn::init()
 void Cnflearn::setsqcol(unsigned int sqcolsize)
 {
    this->sqcolsize = sqcolsize;
+}
+
+void Cnflearn::setsqarraysize(unsigned int sqarraysize)
+{
+   this->sqarraysize = sqarraysize;
+}
+
+void Cnflearn::setsqallocsize(unsigned int sqallocsize)
+{
+   this->sqallocsize = sqallocsize;
 }
 
 void Cnflearn::setlabelcol(unsigned int labelcol)
@@ -645,6 +659,8 @@ void Cnflearn::learn(unsigned int iter, unsigned int reg)
    AllocMemdiscard cache(this->cachesize);
    Sequence sq;
    sq.setColSize(this->sqcolsize);
+   sq.setAllocSize(this->sqallocsize);
+   sq.setArraySize(this->sqarraysize);
    sq.init();
    int t = 0;
    for (unsigned int i = 0; i < iter; i++)
@@ -868,6 +884,8 @@ void Cnflearn::extfeature()
    }
    Sequence sq;
    sq.setColSize(this->sqcolsize);
+   sq.setAllocSize(this->sqallocsize);
+   sq.setArraySize(this->sqarraysize);
    sq.init();
    this->instance = 0;
    while(feof(fp) == 0)

@@ -89,6 +89,14 @@ namespace Cnf
           */
          void setsqcol(unsigned int sqcolsize);
          /**
+          * Sequence ArraySize
+          */
+         void setsqarraysize(unsigned int sqarraysize);
+         /**
+          * Sequence AllocSize
+          */
+         void setsqallocsize(unsigned int sqallocsize);
+         /**
           * Label Col
           * @param   labelcol labelcol
           */
@@ -204,6 +212,10 @@ namespace Cnf
          std::vector<int> fwit;
          /// sequence col size
          unsigned int sqcolsize;
+         /// sequence array size
+         unsigned int sqarraysize;
+         /// sequence alloc size
+         unsigned int sqallocsize;
          /// label col position in sequence
          unsigned int labelcol;
          /// instances size

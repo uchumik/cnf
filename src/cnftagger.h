@@ -70,6 +70,14 @@ namespace Cnf
           */
          void setsqcol(unsigned int sqcolsize);
          /**
+          * Sequence ArraySize
+          */
+         void setsqarraysize(unsigned int sqarraysize);
+         /**
+          * Sequence AllocSize
+          */
+         void setsqallocsize(unsigned int sqallocsize);
+         /**
           * Clear model
           */
          void clear();
@@ -98,6 +106,10 @@ namespace Cnf
          std::vector<int> fwit;
          /// sequence col size
          unsigned int sqcolsize;
+         /// sequence array size
+         unsigned int sqarraysize;
+         /// sequence alloc size
+         unsigned int sqallocsize;
          /// feature to template index
          //std::map<std::string,int> f2t;
          /// valid

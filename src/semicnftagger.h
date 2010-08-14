@@ -70,6 +70,8 @@ namespace SemiCnf
           * @param sqcolsize sqcolsize
           */
          void setsqcol(unsigned int sqcolsize);
+         void setsqarraysize(unsigned int sqarraysize);
+         void setsqallocsize(unsigned int sqallocsize);
          /// label index to surface
          std::vector<std::string> label2surf;
       private:
@@ -103,6 +105,10 @@ namespace SemiCnf
          std::vector<int> fwit;
          /// sequence col size
          unsigned int sqcolsize;
+         /// sequence array size
+         unsigned int sqarraysize;
+         /// sequence alloc size
+         unsigned int sqallocsize;
          /// max id of unigram feature function
          unsigned int umid;
          /// max id of bigram feature function

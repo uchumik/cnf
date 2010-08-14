@@ -52,6 +52,14 @@ class Learner
        * @param colsize colsize of sequence
        */
       void setsqcol(unsigned int sqcolsize);
+      /** Set arraysize of sequence
+       * @param arraysize number of tokens in sequence
+       */
+      void setsqarraysize(unsigned int sqarraysize);
+      /** Set alloc-size of sequence
+       * @param allocsize allocsize
+       */
+      void setsqallocsize(unsigned int sqallocsize);
       /** Set threshold of cut-off for feature
        * @param bound NUM
        */
@@ -126,6 +134,18 @@ void Learner<T>::setlabelcol(unsigned int labelcol)
 void Learner<T>::setsqcol(unsigned int sqcolsize)
 {
    this->impl->setsqcol(sqcolsize);
+}
+
+   template<class T>
+void Learner<T>::setsqarraysize(unsigned int sqarraysize)
+{
+   this->impl->setsqarraysize(sqarraysize);
+}
+
+   template<class T>
+void Learner<T>::setsqallocsize(unsigned int sqallocsize)
+{
+   this->impl->setsqallocsize(sqallocsize);
 }
 
    template<class T>

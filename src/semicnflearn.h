@@ -86,6 +86,8 @@ namespace SemiCnf
          void setsbound(unsigned int sbound);
          void setlabelcol(unsigned int labelcol);
          void setsqcol(unsigned int sqcolsize);
+         void setsqarraysize(unsigned int sqarraysize);
+         void setsqallocsize(unsigned int sqallocsize);
          void setlambda(float lambda);
          void setalpha(float alpha);
          static inline double max(double x, double y)
@@ -207,6 +209,10 @@ namespace SemiCnf
          std::vector<int> fwit;
          /// sequence col size
          unsigned int sqcolsize;
+         /// sequence array size
+         unsigned int sqarraysize;
+         /// sequence alloc size
+         unsigned int sqallocsize;
          /// label col position in sequence
          unsigned int labelcol;
          /// instance size

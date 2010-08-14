@@ -25,6 +25,10 @@ SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int po
    this->labelcol = 2;
    /// sqcolsize
    this->sqcolsize = 3;
+   /// sqarraysize
+   this->sqarraysize = 1000;
+   /// sqallocsize
+   this->sqallocsize = 4096*1000;
    /// feature bound
    this->fbound = 3;
    /// segment bound
@@ -163,6 +167,26 @@ void SemiCnflearn::setsqcol(unsigned int sqcolsize)
       return;
    }
    this->sqcolsize = sqcolsize;
+}
+
+void SemiCnflearn::setsqarraysize(unsigned int sqarraysize)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->sqarraysize = sqarraysize;
+}
+
+void SemiCnflearn::setsqallocsize(unsigned int sqallocsize)
+{
+   if (this->valid)
+   {
+      std::cerr << "ERR: Already initialized" << std::endl;
+      return;
+   }
+   this->sqallocsize = sqallocsize;
 }
 
 void SemiCnflearn::setlambda(float lambda)
@@ -1239,6 +1263,8 @@ void SemiCnflearn::learn(unsigned int iter, unsigned int reg)
    AllocMemdiscard cache(this->cachesize);
    Sequence s;
    s.setColSize(this->sqcolsize);
+   s.setAllocSize(this->sqallocsize);
+   s.setArraySize(this->sqarraysize);
    s.init();
    int t = 0;
    for (unsigned int i = 0; i < iter; ++i)
@@ -1720,6 +1746,8 @@ void SemiCnflearn::extfeature()
    std::string line;
    Sequence s;
    s.setColSize(this->sqcolsize);
+   s.setAllocSize(this->sqallocsize);
+   s.setArraySize(this->sqarraysize);
    s.init();
    this->instance = 0;
    while (!in.eof())

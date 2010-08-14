@@ -13,6 +13,10 @@ SemiCnftagger::SemiCnftagger(const char *tmpl, unsigned int pool)
    this->tmpl = tmpl;
    /// sqcolsize
    this->sqcolsize = 3;
+   /// sqarraysize
+   this->sqarraysize = 1000;
+   /// sqallocsize
+   this->sqallocsize = 4096*1000;
    /// alloc pool
    this->ac = new PoolAlloc(SCNF_BLOCK, pool);
    /// unigram feature dic
@@ -56,6 +60,16 @@ void SemiCnftagger::setcache(unsigned int cachesize)
 void SemiCnftagger::setsqcol(unsigned int sqcolsize)
 {
    this->sqcolsize = sqcolsize;
+}
+
+void SemiCnftagger::setsqarraysize(unsigned int sqarraysize)
+{
+   this->sqarraysize = sqarraysize;
+}
+
+void SemiCnftagger::setsqallocsize(unsigned int sqallocsize)
+{
+   this->sqallocsize = sqallocsize;
 }
 
 bool SemiCnftagger::check(std::string& t)
@@ -1134,6 +1148,8 @@ void SemiCnftagger::tagging(const char *corpus)
    }
    AllocMemdiscard cache(this->cachesize);
    Sequence sq;
+   sq.setAllocSize(this->sqallocsize);
+   sq.setArraySize(this->sqarraysize);
    sq.setColSize(this->sqcolsize);
    sq.init();
 

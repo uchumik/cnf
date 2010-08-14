@@ -13,6 +13,8 @@ static unsigned int block = 64;
 static unsigned int pool = 1000000;
 static unsigned int cache = 1024*100000;
 static unsigned int sqcol = 3;
+static unsigned int sqallocsize = 4096*1000;
+static unsigned int sqarraysize = 1000;
 static std::string algorithm = "cnf";
 static std::string tmpl;
 static std::string corpus;
@@ -29,6 +31,8 @@ void usage(int argc, char **argv)
    std::cerr << "--pool=INT\t" << "pool size of pool allocator(default 1000000)" << std::endl;
    std::cerr << "--cache=INT\t" << "cache size(default 1024*100000)" << std::endl;
    std::cerr << "--sqcol=INT\t" << "input sequence's col size(default 3)" << std::endl;
+   std::cerr << "--sqarraysize=INT\t" << "input sequence's array size(default 1000)" << std::endl;
+   std::cerr << "--sqallocsize=INT\t" << "input sequence's alloc size(default 4096*1000)" << std::endl;
    exit(1);
 }
 
@@ -50,6 +54,14 @@ int set(const char *pname, const char *optarg)
    {
       sqcol = (unsigned int)atoi(optarg);
    }
+   else if (std::strcmp(pname,"sqarraysize") == 0)
+   {
+      sqarraysize = (unsigned int)atoi(optarg);
+   }
+   else if (std::strcmp(pname,"sqallocsize") == 0)
+   {
+      sqallocsize = (unsigned int)atoi(optarg);
+   }
    return 0;
 }
 
@@ -68,6 +80,8 @@ int getparams(int argc, char **argv)
          {"pool", required_argument, 0, 0},
          {"cache", required_argument, 0, 0},
          {"sqcol", required_argument, 0, 0},
+         {"sqarraysize", required_argument,   0, 0},
+         {"sqallocsize", required_argument,   0, 0},
          {0, 0, 0, 0}
       };
       int option_index = 0;
@@ -129,6 +143,8 @@ int main(int argc, char **argv)
       Tagger<Cnftagger> tagger(tmpl.c_str(), pool);
       tagger.setcache(cache);
       tagger.setsqcol(sqcol);
+      tagger.setsqallocsize(sqallocsize);
+      tagger.setsqarraysize(sqarraysize);
       tagger.read(model.c_str());
       tagger.tagging(corpus.c_str());
    }
@@ -137,6 +153,8 @@ int main(int argc, char **argv)
       Tagger<SemiCnftagger> tagger(tmpl.c_str(), pool);
       tagger.setcache(cache);
       tagger.setsqcol(sqcol);
+      tagger.setsqallocsize(sqallocsize);
+      tagger.setsqarraysize(sqarraysize);
       tagger.read(model.c_str());
       tagger.tagging(corpus.c_str());
    }

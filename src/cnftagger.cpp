@@ -21,6 +21,10 @@ Cnftagger::Cnftagger(const char *tmpl, unsigned int pool)
    this->tmpl = tmpl;
    /// sqcolsize
    this->sqcolsize = 3;
+   /// sqarraysize
+   this->sqarraysize = 1000;
+   /// sqallocsize
+   this->sqallocsize = 4096*1000;
    /// alloc pool
    this->ac = new PoolAlloc(CNF_BLOCK, pool);
    /// unigram feature dic
@@ -53,6 +57,16 @@ Cnftagger::~Cnftagger()
 void Cnftagger::setsqcol(unsigned int sqcolsize)
 {
    this->sqcolsize = sqcolsize;
+}
+
+void Cnftagger::setsqarraysize(unsigned int sqarraysize)
+{
+   this->sqarraysize = sqarraysize;
+}
+
+void Cnftagger::setsqallocsize(unsigned int sqallocsize)
+{
+   this->sqallocsize = sqallocsize;
 }
 
 void Cnftagger::setcache(unsigned int cachesize)

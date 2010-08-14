@@ -17,6 +17,8 @@ static unsigned int bound = 3;
 static unsigned int fbound = 3;
 static unsigned int sbound = 1;
 static unsigned int sqcol = 3;
+static unsigned int sqallocsize = 4096*1000;
+static unsigned int sqarraysize = 1000;
 static unsigned int labelcol = 2;
 static unsigned int cache = 1024*100000;
 static float cnfpenalty[3] = {0.0001,0.0001,0.0001};
@@ -48,6 +50,8 @@ void usage(int argc, char **argv)
    std::cerr << "--cache=INT\t" << "cache size(default 1024*100000)" << std::endl;
    std::cerr << "--iter=INT\t" << "iteration(default 50)" << std::endl;
    std::cerr << "--sqcol=INT\t" << "input sequence's col size(default 3)" << std::endl;
+   std::cerr << "--sqarraysize=INT\t" << "input sequence's array size(default 1000)" << std::endl;
+   std::cerr << "--sqallocsize=INT\t" << "input sequence's alloc size(default 4096*1000)" << std::endl;
    std::cerr << "--labelcol=INT\t" << "label col in input sequence(default 2)" << std::endl;
 
    exit(1);
@@ -137,6 +141,14 @@ int set(const char *pname, const char *optarg)
    {
       sqcol = (unsigned int)atoi(optarg);
    }
+   else if (std::strcmp(pname,"sqarraysize") == 0)
+   {
+      sqarraysize = (unsigned int)atoi(optarg);
+   }
+   else if (std::strcmp(pname,"sqallocsize") == 0)
+   {
+      sqallocsize = (unsigned int)atoi(optarg);
+   }
    else if (std::strcmp(pname,"labelcol") == 0)
    {
       labelcol = (unsigned int)atoi(optarg);
@@ -171,6 +183,8 @@ int getparams(int argc, char **argv)
          {"cache", required_argument,   0, 0},
          {"iter", required_argument,   0, 0},
          {"sqcol", required_argument,   0, 0},
+         {"sqarraysize", required_argument,   0, 0},
+         {"sqallocsize", required_argument,   0, 0},
          {"labelcol", required_argument,   0, 0},
          {0, 0, 0, 0}
       };
@@ -264,6 +278,8 @@ int main (int argc, char **argv)
       learner.setbound(bound);
       learner.setpenalty(cnfpenalty[0],cnfpenalty[1],cnfpenalty[2]);
       learner.setsqcol(sqcol);
+      learner.setsqallocsize(sqallocsize);
+      learner.setsqarraysize(sqarraysize);
       learner.setlabelcol(labelcol);
       learner.setlambda(lambda);
       learner.init();
@@ -278,6 +294,8 @@ int main (int argc, char **argv)
       learner.setsbound(sbound);
       learner.setpenalty(semicnfpenalty[0],semicnfpenalty[1],semicnfpenalty[2],semicnfpenalty[3],semicnfpenalty[4]);
       learner.setsqcol(sqcol);
+      learner.setsqallocsize(sqallocsize);
+      learner.setsqarraysize(sqarraysize);
       learner.setlabelcol(labelcol);
       learner.setlambda(lambda);
       learner.setalpha(alpha);
