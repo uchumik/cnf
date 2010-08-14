@@ -66,6 +66,8 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#aa02910d5192231c2e37ce79a21891cc1">setpenalty</a> (float bs, float us, float bf, float uf, float t)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#a83125a31008b58591bd0ca1b82ffd313">setlabelcol</a> (unsigned int labelcol)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#a5c4a83a14330987242fbe288686b3596">setsqcol</a> (unsigned int sqcolsize)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#ad39e659c59dba2e28f217b13d18cdb0b">setsqarraysize</a> (unsigned int sqarraysize)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#ab9c204b990fc41ee7c30cc8f200d1de7">setsqallocsize</a> (unsigned int sqallocsize)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#a62416f5620fc802fae5179826f85ad67">setbound</a> (unsigned int bound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#a0d2638921963da9b96fb54365f04a3b9">setfbound</a> (unsigned int fbound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_learner.html#a07c9aac47ec02fb5a1ba7cdbbe0f61d9">setsbound</a> (unsigned int sbound)</td></tr>
@@ -385,6 +387,50 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="ac671d6d48c87ceb7606b917f8f08a068"></a><!-- doxytag: member="Learner::setpenalty" ref="ac671d6d48c87ceb7606b917f8f08a068" args="(float w, float u, float t)" -->
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_learner.html">Learner</a>&lt; T &gt;::setpenalty </td>
+          <td>(</td>
+          <td class="paramtype">float&nbsp;</td>
+          <td class="paramname"> <em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&nbsp;</td>
+          <td class="paramname"> <em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&nbsp;</td>
+          <td class="paramname"> <em>t</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set penalty parameters </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>penalty parameter for observed-feature </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>u</em>&nbsp;</td><td>penalty parameter for transition-feauture </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>t</em>&nbsp;</td><td>penalty parameter for gate-function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="aa02910d5192231c2e37ce79a21891cc1"></a><!-- doxytag: member="Learner::setpenalty" ref="aa02910d5192231c2e37ce79a21891cc1" args="(float bs, float us, float bf, float uf, float t)" -->
 <div class="memitem">
 <div class="memproto">
@@ -443,50 +489,6 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ac671d6d48c87ceb7606b917f8f08a068"></a><!-- doxytag: member="Learner::setpenalty" ref="ac671d6d48c87ceb7606b917f8f08a068" args="(float w, float u, float t)" -->
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="class_learner.html">Learner</a>&lt; T &gt;::setpenalty </td>
-          <td>(</td>
-          <td class="paramtype">float&nbsp;</td>
-          <td class="paramname"> <em>w</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&nbsp;</td>
-          <td class="paramname"> <em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&nbsp;</td>
-          <td class="paramname"> <em>t</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Set penalty parameters </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>penalty parameter for observed-feature </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>u</em>&nbsp;</td><td>penalty parameter for transition-feauture </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>t</em>&nbsp;</td><td>penalty parameter for gate-function </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="a07c9aac47ec02fb5a1ba7cdbbe0f61d9"></a><!-- doxytag: member="Learner::setsbound" ref="a07c9aac47ec02fb5a1ba7cdbbe0f61d9" args="(unsigned int sbound)" -->
 <div class="memitem">
 <div class="memproto">
@@ -508,6 +510,60 @@ template&lt;class T &gt; </div>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>bound</em>&nbsp;</td><td>NUM </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ab9c204b990fc41ee7c30cc8f200d1de7"></a><!-- doxytag: member="Learner::setsqallocsize" ref="ab9c204b990fc41ee7c30cc8f200d1de7" args="(unsigned int sqallocsize)" -->
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_learner.html">Learner</a>&lt; T &gt;::setsqallocsize </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&nbsp;</td>
+          <td class="paramname"> <em>sqallocsize</em></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set alloc-size of sequence </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>allocsize</em>&nbsp;</td><td>allocsize </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad39e659c59dba2e28f217b13d18cdb0b"></a><!-- doxytag: member="Learner::setsqarraysize" ref="ad39e659c59dba2e28f217b13d18cdb0b" args="(unsigned int sqarraysize)" -->
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_learner.html">Learner</a>&lt; T &gt;::setsqarraysize </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&nbsp;</td>
+          <td class="paramname"> <em>sqarraysize</em></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set arraysize of sequence </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>arraysize</em>&nbsp;</td><td>number of tokens in sequence </td></tr>
   </table>
   </dd>
 </dl>
@@ -559,7 +615,7 @@ template&lt;class T &gt; </div>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Sat Jul 24 2010 22:12:36 for cnf by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Aug 14 2010 23:34:02 for cnf by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
