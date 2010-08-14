@@ -69,4 +69,4 @@ allocpl.o: ../lib/allocpl.cpp
 	$(CXX) $(DEF) -fPIC -c ../lib/allocpl.cpp $(INC) $(LIB)
 
 clean:
-	@rm -rf *.so *.o ../lib/*.o sequencetest cnflearn cnftagger *.core $(bin)
+	@rm -rf libcnf.* *.o ../lib/*.o sequencetest cnflearn cnftagger *.core $(bin)

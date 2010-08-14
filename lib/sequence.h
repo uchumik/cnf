@@ -59,6 +59,12 @@ class Sequence
       /**
        * @param[in] char
        */
+
+
+      /**
+       * @param[in] arraysize max num of tokens in sequence
+       */
+      int setArraySize (unsigned int arraysize);
    private:
       Sequence(const Sequence&);
       Sequence& operator=(const Sequence&);

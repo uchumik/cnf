@@ -55,7 +55,13 @@ int Sequence::init ()
 int Sequence::setAllocSize (unsigned int size)
 {
    this->acsize = size;
-   this->arraysize = (unsigned int)this->acsize/BLOCKSIZE;
+   //this->arraysize = (unsigned int)this->acsize/BLOCKSIZE;
+   return 0;
+}
+
+int Sequence::setArraySize (unsigned int arraysize)
+{
+   this->arraysize = arraysize;
    return 0;
 }
 
@@ -67,18 +73,26 @@ int Sequence::setColSize (unsigned int size)
 
 int Sequence::push (const char *str)
 {
+   const char *head = str;
    const char *p = str;
    unsigned int shift = 0;
+   unsigned int col = 0;
    while (shift = MyUtil::getByteUtf8(str))
    {
       if (std::strncmp(str, this->delim, std::strlen(this->delim)) == 0)
       {
+         if (this->point == this->arraysize)
+         {
+            fprintf (stderr, "arraysize over[%u]\n",this->arraysize);
+            exit(1);
+         }
          int len = str - p;
          char *token = (char*)this->ac->alloc(len+1);
          std::strncpy(token,p,len);
          *(token+len) = '\0';
          *(this->tokens+this->point++) = token;
          p = str+1;
+         ++col;
       }
       str += shift;
       if (std::strlen(str) == 0)
@@ -88,13 +102,25 @@ int Sequence::push (const char *str)
    }
    if (std::strlen(p) > 0)
    {
+      if (this->point == this->arraysize)
+      {
+         fprintf (stderr, "arraysize over[%u]\n",this->arraysize);
+         exit(1);
+      }
       int len = str - p;
       char *token = (char*)this->ac->alloc(len+1);
       std::strncpy(token,p,len);
       *(token+len) = '\0';
       *(this->tokens+this->point++) = token;
+      ++col;
    }
-   return 0;
+   if (col != this->colsize)
+   {
+      fprintf (stderr, "pushed tokens num != colsize[%u]\n",this->colsize);
+      fprintf (stderr, "%s\n",head);
+      exit (1);
+   }
+   return col;
 }
 
 unsigned int Sequence::getRowSize ()
