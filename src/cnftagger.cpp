@@ -628,6 +628,7 @@ void Cnftagger::tagging(const char *corpus)
    AllocMemdiscard cache(this->cachesize);
    Sequence sq;
    sq.setColSize(this->sqcolsize);
+   sq.setArraySize(this->sqarraysize);
    sq.init();
 
    while (feof(fp) == 0)
