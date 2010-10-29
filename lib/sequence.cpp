@@ -5,6 +5,7 @@
 # include <sequence.h>
 # include <cstdio>
 # include <cstring>
+# include <cstdlib>
 
 const char *sp = " ";
 

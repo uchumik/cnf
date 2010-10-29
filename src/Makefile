@@ -1,7 +1,7 @@
 CXX=g++
 DEF= -W -Wall -g -O3
-INC= -I/opt/local/include -I. -I../lib
-LIB= -L/opt/local/lib -L../lib
+INC= -I/usr/include -I. -I../lib
+LIB= -L/usr/lib -L../lib
 
 #bin= cnftagger cnflearn sequencetest
 bin= tagger learner libcnf
