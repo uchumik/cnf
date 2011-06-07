@@ -27,14 +27,14 @@ class Tagger
        * @param cache cache
        * @param labels vector to store predicted labels
        */
-      void viterbi(Sequence *s,
+      void viterbi(sequential::Sequence *s,
             AllocMemdiscard *cache,
             std::vector<int>& labels);
       /** Output labeled-sequence
        * @param s sequence
        * @param labels vector stored labels
        */
-      void output(Sequence *s, std::vector<int>& labels);
+      void output(sequential::Sequence *s, std::vector<int>& labels);
       /** Set cachesize
        * @param cache cachesize
        */
@@ -86,7 +86,7 @@ void Tagger<T>::tagging(const char *corpus)
 }
 
    template<class T>
-void Tagger<T>::viterbi(Sequence *s,
+void Tagger<T>::viterbi(sequential::Sequence *s,
       AllocMemdiscard *cache,
       std::vector<int>& labels)
 {
@@ -94,7 +94,7 @@ void Tagger<T>::viterbi(Sequence *s,
 }
 
    template<class T>
-void Tagger<T>::output(Sequence *s,
+void Tagger<T>::output(sequential::Sequence *s,
       std::vector<int>& labels)
 {
    this->impl->output(s,labels);
