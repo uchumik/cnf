@@ -7,6 +7,7 @@
 # define BUFSIZE 4096
 # define GZ_MODE "rb6f"
 
+using namespace sequential;
 int main (int argc, char **argv)
 {
    if (argc < 3)

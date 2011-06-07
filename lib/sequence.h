@@ -13,72 +13,78 @@
 # define ALLOCSIZE (4096*1000) // 512KB
 # define BLOCKSIZE 4096
 
-class Sequence
+namespace sequential
 {
-   public:
-      Sequence();
-      ~Sequence();
-      /**
-       *
-       */
-      int dump();
-      /**
-       * @param[in] str
-       */
-      int push(const char *str);
-      /**
-       *
-       */
-      int clear();
-      /**
-       * @param[out] rowsize
-       */
-      unsigned int getRowSize();
-      /**
-       * @param[in] row
-       * @param[in] col
-       * @param[out] char*
-       */
-      char* getToken(int row, int col);
-      /**
-       * @param[in] delimit
-       */
-      int setDelimit(const char *delimit);
-      /**
-       *
-       */
-      int init();
-      /**
-       * @param[in] allocsize
-       */
-      int setAllocSize(unsigned int allocsize);
-      /**
-       * @param[in] colsize
-       */
-      int setColSize(unsigned int colsize);
-      /**
-       * @param[in] char
-       */
+   class Sequence
+   {
+      public:
+         Sequence();
+         ~Sequence();
+         /**
+          *
+          */
+         int dump();
+         /**
+          * @param[in] str
+          */
+         int push(const char *str);
+         /**
+          *
+          */
+         int clear();
+         /**
+          * @param[out] rowsize
+          */
+         unsigned int getRowSize();
+         /**
+          * @param[out] rowsize
+          */
+         unsigned int getColSize();
+         /**
+          * @param[in] row
+          * @param[in] col
+          * @param[out] char*
+          */
+         char* getToken(int row, int col);
+         /**
+          * @param[in] delimit
+          */
+         int setDelimit(const char *delimit);
+         /**
+          *
+          */
+         int init();
+         /**
+          * @param[in] allocsize
+          */
+         int setAllocSize(unsigned int allocsize);
+         /**
+          * @param[in] colsize
+          */
+         int setColSize(unsigned int colsize);
+         /**
+          * @param[in] char
+          */
 
 
-      /**
-       * @param[in] arraysize max num of tokens in sequence
-       */
-      int setArraySize (unsigned int arraysize);
-   private:
-      Sequence(const Sequence&);
-      Sequence& operator=(const Sequence&);
+         /**
+          * @param[in] arraysize max num of tokens in sequence
+          */
+         int setArraySize (unsigned int arraysize);
+      private:
+         Sequence(const Sequence&);
+         Sequence& operator=(const Sequence&);
 
-      unsigned int acsize;
-      char **tokens;
-      AllocMemdiscard *ac;
-      const char *delim;
+         unsigned int acsize;
+         char **tokens;
+         AllocMemdiscard *ac;
+         const char *delim;
 
-      unsigned int colsize;
-      unsigned int arraysize;
-      unsigned int point;
+         unsigned int colsize;
+         unsigned int arraysize;
+         unsigned int point;
 
-      unsigned int ngram;
-};
-
+         unsigned int ngram;
+   };
+}
 # endif /* __SEQUENCE_H__ */

@@ -255,7 +255,7 @@ namespace Cnf
           * label extraction
           * @param s Sequence
           */
-         void extlabel(Sequence *s);
+         void extlabel(sequential::Sequence *s);
          /**
           * feature extraction
           */
@@ -263,14 +263,14 @@ namespace Cnf
          /**
           * feature extract
           */
-         void extract(Sequence *s);
+         void extract(sequential::Sequence *s);
          /**
           * feature expand
           * @param tmpl template
           * @param s   sequence
           * @param current current row number
           */
-         char* expand(char *tp, Sequence *s, int current);
+         char* expand(char *tp, sequential::Sequence *s, int current);
          /**
           * feature rejection
           */
@@ -290,11 +290,11 @@ namespace Cnf
          /**
           * get correct lavbels
           */
-         void getclabels(Sequence *s, std::vector<int>& labels);
+         void getclabels(sequential::Sequence *s, std::vector<int>& labels);
          /**
           * store feature set
           */
-         void storefset(Sequence *s, std::vector<feature_t>& featureset);
+         void storefset(sequential::Sequence *s, std::vector<feature_t>& featureset);
          /**
           * init lattice
           */
@@ -314,7 +314,7 @@ namespace Cnf
          /**
           * update parameters
           */
-         void update(Sequence *sq, AllocMemdiscard *cache, unsigned int reg);
+         void update(sequential::Sequence *sq, AllocMemdiscard *cache, unsigned int reg);
          /**
           * calc correct vector
           */

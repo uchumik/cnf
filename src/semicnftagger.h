@@ -55,12 +55,12 @@ namespace SemiCnf
           * @param cache cache
           * @param labelids vector to store predicted label ids
           */
-         void viterbi(Sequence *s, AllocMemdiscard *cache, std::vector<int>& labelids);
+         void viterbi(sequential::Sequence *s, AllocMemdiscard *cache, std::vector<int>& labelids);
          /**
           * @param Sequence target sequence
           * @param labels predicted label ids
           */
-         void output(Sequence *s, std::vector<int>& labels);
+         void output(sequential::Sequence *s, std::vector<int>& labels);
          /**
           * @param cache cachesize
           */
@@ -134,7 +134,7 @@ namespace SemiCnf
           * @param s Sequence
           * @param current current position
           */
-         char* fexpand(std::string& t, Sequence *s, int current);
+         char* fexpand(std::string& t, sequential::Sequence *s, int current);
          /**
           * segment expand
           * @param t template
@@ -142,11 +142,11 @@ namespace SemiCnf
           * @param current current position
           * @param segments segments
           */
-         int sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments);
+         int sexpand(std::string& t, sequential::Sequence *s, int current, std::vector<segments_t>& segments);
          /**
           * store feature set
           */
-         void storefset(Sequence *s, std::vector<vnode_t>& lattice, AllocMemdiscard *cache);
+         void storefset(sequential::Sequence *s, std::vector<vnode_t>& lattice, AllocMemdiscard *cache);
          /** store ufeature cache
          */
          void storeufcache(vnode_t *node);

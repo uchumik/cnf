@@ -16,6 +16,8 @@
 # define CNF_BLOCK 128
 
 using namespace Cnf;
+using namespace sequential;
+using namespace toyutil;
 Cnftagger::Cnftagger(const char *tmpl, unsigned int pool)
 {
    this->tmpl = tmpl;

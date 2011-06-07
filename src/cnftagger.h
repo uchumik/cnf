@@ -50,7 +50,7 @@ namespace Cnf
           * @param   cache cache
           * @param   labelids store predicted label ids
           */
-         void viterbi(Sequence *s,
+         void viterbi(sequential::Sequence *s,
                AllocMemdiscard *cache,
                std::vector<int>& labelids);
          /**
@@ -58,7 +58,7 @@ namespace Cnf
           * @param   Sequence target sequence
           * @param   labels   predicted label ids
           */
-         void output(Sequence *s, std::vector<int>& labels);
+         void output(sequential::Sequence *s, std::vector<int>& labels);
          /**
           * Cache Size
           * @param   cache cachesize
@@ -133,11 +133,11 @@ namespace Cnf
           * @param s   sequence
           * @param current current row number
           */
-         char* expand(char *tp, Sequence *s, int current);
+         char* expand(char *tp, sequential::Sequence *s, int current);
          /**
           * store feature set
           */
-         void storefset(Sequence *s, std::vector<feature_t>& featureset);
+         void storefset(sequential::Sequence *s, std::vector<feature_t>& featureset);
          /**
           * calc bigram cost
           */

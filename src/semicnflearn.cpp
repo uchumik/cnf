@@ -15,6 +15,8 @@
 # define SCNF_BLOCK 64
 
 using namespace SemiCnf;
+using namespace sequential;
+using namespace toyutil;
 SemiCnflearn::SemiCnflearn(const char *tmpl, const char *corpus, unsigned int pool)
 {
    this->tmpl = tmpl;

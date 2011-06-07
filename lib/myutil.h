@@ -13,6 +13,8 @@
 # include <iostream>
 # include <fstream>
 
+namespace toyutil
+{
 class MyUtil
 {
    public:
@@ -133,7 +135,7 @@ class MyUtil
        * @param sq   Sequence
        * @param bufsize buffer size
        */
-      static void sqread(FILE *fp, Sequence *s, unsigned int bufsize)
+      static void sqread(FILE *fp, sequential::Sequence *s, unsigned int bufsize)
       {
          char buf[bufsize];
          while (fgets(buf,bufsize,fp) != NULL)
@@ -151,7 +153,7 @@ class MyUtil
        * @param in   ifstream
        * @param sq   Sequence
        */
-      static void sqread(std::ifstream& in, Sequence *s)
+      static void sqread(std::ifstream& in, sequential::Sequence *s)
       {
          std::string line;
          while (std::getline(in,line))
@@ -167,4 +169,5 @@ class MyUtil
    private:
 
 };
+}
 # endif /* __MYUTIL_H__ */

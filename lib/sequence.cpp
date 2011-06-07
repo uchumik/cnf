@@ -7,16 +7,22 @@
 # include <cstring>
 # include <cstdlib>
 
+using namespace sequential;
+using namespace toyutil;
+
 const char *sp = " ";
 
 Sequence::Sequence ()
+: acsize(ALLOCSIZE),arraysize((unsigned int)ALLOCSIZE/BLOCKSIZE), ac(NULL), delim(sp), colsize(1), ngram(1)
 {
+   /*
    this->acsize = ALLOCSIZE;
    this->arraysize = (unsigned int)(this->acsize/BLOCKSIZE);
    this->ac = NULL;
    this->delim = sp;
    this->colsize = 1;
    this->ngram = 1;
+   */
 }
 
 Sequence::~Sequence ()
@@ -50,6 +56,16 @@ int Sequence::init ()
    this->tokens = (char**)(this->ac->alloc(sizeof(char*)*this->arraysize));
    this->point = 0;
 
+   return 0;
+}
+
+int Sequence::setDelimit (const char *delimit)
+{
+   if (!delimit)
+   {
+      return 1;
+   }
+   this->delim = delimit;
    return 0;
 }
 
@@ -127,6 +143,11 @@ int Sequence::push (const char *str)
 unsigned int Sequence::getRowSize ()
 {
    return this->point/this->colsize;
+}
+
+unsigned int Sequence::getColSize ()
+{
+   return this->colsize;
 }
 
 int Sequence::clear ()

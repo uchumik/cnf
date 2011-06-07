@@ -253,20 +253,20 @@ namespace SemiCnf
           * label extraction
           * @param s Sequence
           */
-         void extlabel(Sequence *s);
+         void extlabel(sequential::Sequence *s);
          char* cutbi(char *l);
          /**
           * feature extract
           */
          void extfeature();
-         void extract(Sequence *s);
+         void extract(sequential::Sequence *s);
          /**
           * feature expand
           * @param t template
           * @param s Sequence
           * @param current current position
           */
-         char* fexpand(std::string& t, Sequence *s, int current);
+         char* fexpand(std::string& t, sequential::Sequence *s, int current);
          /**
           * segment expand
           * @param t template
@@ -274,7 +274,7 @@ namespace SemiCnf
           * @param current current position
           * @param segments segments
           */
-         int sexpand(std::string& t, Sequence *s, int current, std::vector<segments_t>& segments);
+         int sexpand(std::string& t, sequential::Sequence *s, int current, std::vector<segments_t>& segments);
          /**
           * feature rejection
           */
@@ -302,11 +302,11 @@ namespace SemiCnf
          /**
           * update
           */
-         void update(Sequence *s, AllocMemdiscard *cache, unsigned int reg);
+         void update(sequential::Sequence *s, AllocMemdiscard *cache, unsigned int reg);
          /**
           * store feature set
           */
-         void storefset(Sequence *s, std::vector<node_t>& lattice, AllocMemdiscard *cache);
+         void storefset(sequential::Sequence *s, std::vector<node_t>& lattice, AllocMemdiscard *cache);
          /** store ufeature cache
          */
          void storeufcache(node_t *node);
@@ -345,7 +345,7 @@ namespace SemiCnf
          /**
           * get correct labels
           */
-         void getclabels(Sequence *sq, std::vector<correct_t>& corrects);
+         void getclabels(sequential::Sequence *sq, std::vector<correct_t>& corrects);
          /**
           * get correct vector
           */

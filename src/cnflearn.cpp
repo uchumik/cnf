@@ -21,6 +21,8 @@
 # define CNF_BLOCK 128
 
 using namespace Cnf;
+using namespace sequential;
+using namespace toyutil;
 Cnflearn::Cnflearn(const char *tmpl, const char *corpus, unsigned int pool)
 {
    this->tmpl = tmpl;

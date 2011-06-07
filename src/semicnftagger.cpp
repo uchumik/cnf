@@ -8,6 +8,8 @@
 # define SCNF_BLOCK 64
 
 using namespace SemiCnf;
+using namespace sequential;
+using namespace toyutil;
 SemiCnftagger::SemiCnftagger(const char *tmpl, unsigned int pool)
 {
    this->tmpl = tmpl;
