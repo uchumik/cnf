@@ -76,6 +76,7 @@ TMPL
    f.key += ":";
    f.key += $<prefix>3;
    f.id = (unsigned int)-1;
+   ($<prefix>1[0] == 'U')?f.ngram=1:f.ngram=2;
    f.val = 1.0;
    fv[current].push_back(f);
 }
@@ -86,6 +87,7 @@ TMPL
       realfeature_ f;
       f.key = $<prefix>1;
       f.id = (unsigned int)-1;
+      ($<prefix>1[0] == 'U')?f.ngram=1:f.ngram=2;
       f.val = $<val>3;
       fv[current].push_back(f);
    }
@@ -95,6 +97,7 @@ TMPL
    realfeature_ f;
    f.key = $<prefix>1;
    f.id = (unsigned int)-1;
+   ($<prefix>1[0] == 'U')?f.ngram=1:f.ngram=2;
    f.val = 1.0;
    fv[current].push_back(f);
 }
