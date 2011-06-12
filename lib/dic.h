@@ -34,7 +34,7 @@ class Dic
       /**
        * @param[in] keyword
        */
-      nodeptr insert(char *word);
+      nodeptr insert(const char *word);
       /**
        * @param[in] keyword
        * @param[out] node

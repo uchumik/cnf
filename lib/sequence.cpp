@@ -59,6 +59,11 @@ int Sequence::init ()
    return 0;
 }
 
+const char* Sequence::getDelimit()
+{
+   return this->delim;
+}
+
 int Sequence::setDelimit (const char *delimit)
 {
    if (!delimit)
@@ -108,7 +113,7 @@ int Sequence::push (const char *str)
          std::strncpy(token,p,len);
          *(token+len) = '\0';
          *(this->tokens+this->point++) = token;
-         p = str+1;
+         p = str+std::strlen(this->delim);
          ++col;
       }
       str += shift;

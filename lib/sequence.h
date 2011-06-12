@@ -47,6 +47,10 @@ namespace sequential
           */
          char* getToken(int row, int col);
          /**
+          * @param[out] delimit
+          */
+         const char* getDelimit();
+         /**
           * @param[in] delimit
           */
          int setDelimit(const char *delimit);

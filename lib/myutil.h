@@ -82,7 +82,7 @@ class MyUtil
          {
             return 3;
          }
-         else if (c <- 0xF7)
+         else if (c <= 0xF7)
          {
             return 4;
          }

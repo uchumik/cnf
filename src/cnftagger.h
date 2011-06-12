@@ -33,7 +33,7 @@ namespace Cnf
           * @param   poolsize poolsize for dic
           */
          Cnftagger(const char *tmpl, unsigned int pool);
-         ~Cnftagger();
+         virtual ~Cnftagger();
          /**
           * Load Model
           * @param   model modelfile

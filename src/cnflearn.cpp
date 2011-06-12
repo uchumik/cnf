@@ -95,6 +95,10 @@ bool Cnflearn::init()
       this->ac->release(this->pcache);
       /// feature dic
       this->features = new Dic(this->ac, CountUp);
+      delete this->ufeatures;
+      delete this->bfeatures;
+      this->ufeatures = new Dic(this->ac, Index);
+      this->bfeatures = new Dic(this->ac, Index);
    }
    /// feature extraction and encoding
    this->extfeature();
@@ -701,7 +705,7 @@ void Cnflearn::lreport(unsigned int i)
 void Cnflearn::report()
 {
    fprintf (stderr,"labels: %d\n",this->labels->getsize());
-   fprintf (stderr,"features: %d\n",this->features->getsize());
+   //fprintf (stderr,"features: %d\n",this->features->getsize());
    fprintf (stderr,"bound: %d\n", this->bound);
    fprintf (stderr,"ufeatures: %d\n", this->ufeatures->getsize());
    fprintf (stderr,"bfeatures: %d\n", this->bfeatures->getsize());

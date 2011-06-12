@@ -66,7 +66,7 @@ int Dic::getsize ()
    return this->wordnum;
 }
 
-nodeptr Dic::insert (char *word)
+nodeptr Dic::insert (const char *word)
 {
    int dist = 0;
    nodeptr *p = (this->table+Dic::hash(word));

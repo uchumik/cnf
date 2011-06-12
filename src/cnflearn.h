@@ -51,7 +51,7 @@ namespace Cnf
           * @param   poolsize poolsize for dic
           */
          Cnflearn(const char *tmpl, const char *corpus, unsigned int poolsize);
-         ~Cnflearn();
+         virtual ~Cnflearn();
 
          /** Learn Parameters
           * @param   iter  iteration

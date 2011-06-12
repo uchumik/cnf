@@ -14,7 +14,6 @@ struct realfeature_
 {
    std::string key;
    unsigned int ngram; // unigram:1 bigram:2
-   unsigned int id;
    double val;
 };
 
